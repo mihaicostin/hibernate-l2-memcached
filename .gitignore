@@ -1,0 +1,12 @@
+#Idea IDE files
+.idea
+*.ipr
+*.iws
+*.iml
+
+#output files
+target
+
+release.properties
+pom.xml.releaseBackup
+nb-configuration.xml
