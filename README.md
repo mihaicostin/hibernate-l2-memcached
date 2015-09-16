@@ -14,9 +14,11 @@ A library for using Memcached as a second level distributed cache in Hibernate.
 * Compatible with hibernate 4.3.x
 * Example config:
 
-  ``<property name="hibernate.cache.region.factory_class">com.googlecode.hibernate.memcached.MemcachedRegionFactory</property>``
-  ``<property name="hibernate.memcached.operationTimeout">5000</property>``
-  ``<property name="hibernate.memcached.connectionFactory">KetamaConnectionFactory</property>``
-  ``<property name="hibernate.memcached.hashAlgorithm">HashAlgorithm.FNV1_64_HASH</property>``
+```xml
+<property name="hibernate.cache.region.factory_class">com.mc.hibernate.memcached.MemcachedRegionFactory</property>
+<property name="hibernate.memcached.operationTimeout">5000</property>
+<property name="hibernate.memcached.connectionFactory">KetamaConnectionFactory</property>
+<property name="hibernate.memcached.hashAlgorithm">HashAlgorithm.FNV1_64_HASH</property>
+```
 
 If memcached authentication is required, it can be specified using "hibernate.memcached.username" and "hibernate.memcached.password"
