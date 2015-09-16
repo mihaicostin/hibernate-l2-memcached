@@ -67,7 +67,7 @@ class ConfigTest extends BaseTestCase {
         Properties p = new Properties()
         Config config = newConfig(p)
         //test default
-        assertEquals "SpyMemcacheClientFactory",
+        assertEquals "com.mc.hibernate.memcached.spymemcached.SpyMemcacheClientFactory",
                 config.getMemcachedClientFactoryName()
 
         p["hibernate.memcached.memcacheClientFactory"] = "blah"
