@@ -22,3 +22,15 @@ A library for using Memcached as a second level distributed cache in Hibernate.
 ```
 
 If memcached authentication is required, it can be specified using "hibernate.memcached.username" and "hibernate.memcached.password"
+
+#Maven
+In order to use this librabry as a maven dependency, just add the following dependency to your pom. 
+
+```xml
+        <dependency>
+            <groupId>com.github.mihaicostin</groupId>
+            <artifactId>hibernate-l2-memcached</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+```
+
