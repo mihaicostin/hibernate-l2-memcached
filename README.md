@@ -1,7 +1,7 @@
 # Hibernate - Memcached
 A library for using Memcached as a second level distributed cache in Hibernate.
   
-  * Works with Hibernate 4
+  * Works with Hibernate 4 and 5
   * Uses spymemcached client
   * Supports entity and query caching.
   * Based on the work done on Hibernate-Memcached for hibernate 3.x
