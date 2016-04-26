@@ -1,14 +1,13 @@
-package com.googlecode.hibernate.memcached.integration;
-
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+package com.integration.com.mc.hibernate.memcached.entities;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -16,36 +15,36 @@ public class Contact {
 
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    String firstName;
+    private String firstName;
 
-    String lastName;
+    private String lastName;
 
     @Type(type = "date")
-    Date birthday;
+    private Date birthday;
 
-    Long getId() {
+    public Long getId() {
         return id;
     }
 
-    void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    String getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    void setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    String getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -57,18 +56,19 @@ public class Contact {
         this.birthday = birthday;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Contact contact = (Contact) o;
 
-        if (id != null ? !id.equals(contact.id) : contact.id != null) return false;
+        return id != null ? id.equals(contact.id) : contact.id == null;
 
-        return true;
     }
 
+    @Override
     public int hashCode() {
-        return (id != null ? id.hashCode() : 0);
+        return id != null ? id.hashCode() : 0;
     }
 }

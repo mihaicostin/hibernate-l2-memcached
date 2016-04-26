@@ -15,14 +15,13 @@
 
 package com.mc.hibernate.memcached;
 
-import java.util.Map;
-
+import com.mc.hibernate.memcached.keystrategy.KeyStrategy;
+import com.mc.hibernate.memcached.keystrategy.Sha1KeyStrategy;
 import org.hibernate.cache.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mc.hibernate.memcached.keystrategy.KeyStrategy;
-import com.mc.hibernate.memcached.keystrategy.Sha1KeyStrategy;
+import java.util.Map;
 
 /**
  * Wrapper around MemcachedClient instance to provide the bridge between Hibernate and Memcached.
@@ -63,9 +62,10 @@ public class MemcachedCache {
 
     public static final Integer DOGPILE_TOKEN = 0;
 
-    public MemcachedCache(String regionName, Memcache memcachedClient) {
+    public MemcachedCache(String regionName, Memcache memcachedClient, Config config) {
         this.regionName = (regionName != null) ? regionName : "default";
         this.memcache = memcachedClient;
+        this.cacheTimeSeconds = config.getCacheTimeSeconds(this.regionName);
         clearIndexKey = this.regionName.replaceAll("\\s", "") + ":index_key";
     }
 

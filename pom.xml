@@ -4,7 +4,7 @@
 
     <groupId>com.github.mihaicostin</groupId>
     <artifactId>hibernate-l2-memcached</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0-SNAPSHOT</version>
     <name>hibernate-l2-memcached</name>
     <description>A library for using Memcached as a second level distributed cache in Hibernate.</description>
     <url>https://github.com/mihaicostin/hibernate-l2-memcached</url>
@@ -43,9 +43,7 @@
         <spymemcached.version>2.11.6</spymemcached.version>
         <slf4j-api.version>1.5.6</slf4j-api.version>
 
-        <junit.version>4.4</junit.version>
-        <gmaven.version>1.5</gmaven.version>
-        <groovy.version>1.6.3</groovy.version>
+        <junit.version>4.12</junit.version>
         <hsqldb.version>2.3.2</hsqldb.version>
         <slf4j-log4j12.version>1.5.6</slf4j-log4j12.version>
     </properties>
@@ -71,56 +69,6 @@
                         <descriptorRef>src</descriptorRef>
                     </descriptorRefs>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>groovy-maven-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateTestStubs</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Allow writing tests in Groovy -->
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>${gmaven.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateTestStubs</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <providerSelection>1.7</providerSelection>
-                    <source>src/main/groovy</source>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.gmaven.runtime</groupId>
-                        <artifactId>gmaven-runtime-2.0</artifactId>
-                        <version>${gmaven.version}</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>org.codehaus.groovy</groupId>
-                                <artifactId>groovy-all</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-all</artifactId>
-                        <version>${groovy.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <!-- Releasing to OSSRH -->
@@ -176,12 +124,6 @@
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${groovy.version}</version>
             <scope>test</scope>
         </dependency>
 
