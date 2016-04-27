@@ -1,4 +1,4 @@
-package com.googlecode.hibernate.memcached;
+package com.mc.hibernate.memcached.mock;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
@@ -8,13 +8,13 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import junit.framework.Assert;
 
-class MockAppender implements Appender {
+public class MockAppender implements Appender {
 
-    String expectedMessage;
-    Exception expectedError;
-    boolean appenderCalled = false;
+    private String expectedMessage;
+    private Exception expectedError;
+    private boolean appenderCalled = false;
 
-    MockAppender(String expectedMessage, Exception expectedError) {
+    public MockAppender(String expectedMessage, Exception expectedError) {
         this.expectedMessage = expectedMessage;
         this.expectedError = expectedError;
     }
@@ -66,5 +66,9 @@ class MockAppender implements Appender {
 
     public boolean requiresLayout() {
         throw new UnsupportedOperationException();
+    }
+
+    public boolean isAppenderCalled() {
+        return appenderCalled;
     }
 }

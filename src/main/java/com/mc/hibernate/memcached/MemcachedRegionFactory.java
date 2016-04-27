@@ -15,29 +15,18 @@
 
 package com.mc.hibernate.memcached;
 
-import java.lang.reflect.Constructor;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
+import com.mc.hibernate.memcached.region.*;
 import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.CacheDataDescription;
-import org.hibernate.cache.spi.CollectionRegion;
-import org.hibernate.cache.spi.EntityRegion;
-import org.hibernate.cache.spi.NaturalIdRegion;
-import org.hibernate.cache.spi.QueryResultsRegion;
-import org.hibernate.cache.spi.RegionFactory;
-import org.hibernate.cache.spi.TimestampsRegion;
+import org.hibernate.cache.spi.*;
 import org.hibernate.cache.spi.access.AccessType;
 import org.hibernate.cfg.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mc.hibernate.memcached.region.MemcachedCollectionRegion;
-import com.mc.hibernate.memcached.region.MemcachedEntityRegion;
-import com.mc.hibernate.memcached.region.MemcachedNaturalIdRegion;
-import com.mc.hibernate.memcached.region.MemcachedQueryResultsRegion;
-import com.mc.hibernate.memcached.region.MemcachedTimestampsRegion;
+import java.lang.reflect.Constructor;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 public class MemcachedRegionFactory implements RegionFactory {
@@ -132,6 +121,6 @@ public class MemcachedRegionFactory implements RegionFactory {
     }
 
     private MemcachedCache getCache(String regionName) {
-        return caches.get(regionName) == null ? new MemcachedCache(regionName, client) : caches.get(regionName);
+        return caches.get(regionName) == null ? new MemcachedCache(regionName, client, new Config(new PropertiesHelper(properties))) : caches.get(regionName);
     }
 }
