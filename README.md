@@ -9,8 +9,17 @@ A library for using Memcached as a second level distributed cache in Hibernate.
       * https://github.com/kcarlson/hibernate-memcached
 
 #Versions
+
+## 1.1.0
+
+Memcached client now respects the region timeout property
+ - [Issue #1](https://github.com/mihaicostin/hibernate-l2-memcached/issues/1)
+```xml
+<property name="hibernate.memcached.REGION.cacheTimeSeconds">10</property>
+```
+
   
-## 1.0
+## 1.0.0
 * Compatible with hibernate 4.3.x
 * Example config:
 
@@ -24,13 +33,13 @@ A library for using Memcached as a second level distributed cache in Hibernate.
 If memcached authentication is required, it can be specified using "hibernate.memcached.username" and "hibernate.memcached.password"
 
 #Maven
-In order to use this librabry as a maven dependency, just add the following dependency to your pom. 
+In order to use this library as a maven dependency, just add the following dependency to your pom.
 
 ```xml
         <dependency>
             <groupId>com.github.mihaicostin</groupId>
             <artifactId>hibernate-l2-memcached</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
 ```
 
