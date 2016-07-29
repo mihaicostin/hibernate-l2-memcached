@@ -15,12 +15,15 @@
 
 package com.mc.hibernate.memcached.strategy;
 
+import com.mc.hibernate.memcached.region.MemcachedEntityRegion;
+import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
+import org.hibernate.cache.internal.DefaultCacheKeysFactory;
 import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.cfg.Settings;
-
-import com.mc.hibernate.memcached.region.MemcachedEntityRegion;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.persister.entity.EntityPersister;
 
 /**
  * Based on Ehcache specific non-strict read/write entity region access strategy.
@@ -35,80 +38,99 @@ public class NonStrictReadWriteMemcachedEntityRegionAccessStrategy
      * @param region   The wrapped region
      * @param settings The Hibernate settings
      */
-    public NonStrictReadWriteMemcachedEntityRegionAccessStrategy(MemcachedEntityRegion region, Settings settings) {
+    public NonStrictReadWriteMemcachedEntityRegionAccessStrategy(MemcachedEntityRegion region, SessionFactoryOptions settings) {
         super(region, settings);
     }
 
-    public Object get(Object key, long txTimestamp) throws CacheException {
-        return region.getCache().get(key);
+
+    @Override
+    public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
+        return region().get(key);
     }
 
     @Override
-    public boolean putFromLoad(Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride)
+    public boolean putFromLoad(SharedSessionContractImplementor session, Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride)
             throws CacheException {
         if (minimalPutOverride && region.contains(key)) {
             return false;
         } else {
-            region.getCache().put(key, value);
+            region().put(key, value);
             return true;
         }
     }
 
     /**
      * {@inheritDoc}
-     * <p>
+     * <p/>
      * Since this is a non-strict read/write strategy item locking is not used.
      */
-    public SoftLock lockItem(Object key, Object version) throws CacheException {
+    @Override
+    public SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws CacheException {
         return null;
     }
 
     /**
      * {@inheritDoc}
-     * <p>
+     * <p/>
      * Since this is a non-strict read/write strategy item locking is not used.
      */
-    public void unlockItem(Object key, SoftLock lock) throws CacheException {
-        region.getCache().remove(key);
+    @Override
+    public void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
+        region().remove(key);
     }
 
     /**
      * {@inheritDoc}
-     * <p>
+     * <p/>
      * Returns <code>false</code> since this is an asynchronous cache access strategy.
      */
-    public boolean insert(Object key, Object value, Object version) throws CacheException {
+    @Override
+    public boolean insert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
         return false;
     }
 
     /**
      * {@inheritDoc}
-     * <p>
+     * <p/>
      * Returns <code>false</code> since this is a non-strict read/write cache access strategy
      */
-    public boolean afterInsert(Object key, Object value, Object version) throws CacheException {
+    @Override
+    public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
         return false;
     }
 
     /**
      * {@inheritDoc}
-     * <p>
+     * <p/>
      * Removes the entry since this is a non-strict read/write cache strategy.
      */
-    public boolean update(Object key, Object value, Object currentVersion, Object previousVersion)
+    @Override
+    public boolean update(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion)
             throws CacheException {
-        remove(key);
-        return false;
-    }
-
-    public boolean afterUpdate(Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock)
-            throws CacheException {
-        unlockItem(key, lock);
+        remove(session, key);
         return false;
     }
 
     @Override
-    public void remove(Object key) throws CacheException {
-        region.getCache().remove(key);
+    public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock)
+            throws CacheException {
+        unlockItem(session, key, lock);
+        return false;
     }
+
+    @Override
+    public void remove(SharedSessionContractImplementor session, Object key) throws CacheException {
+        region().remove(key);
+    }
+
+    @Override
+    public Object generateCacheKey(Object id, EntityPersister persister, SessionFactoryImplementor factory, String tenantIdentifier) {
+        return DefaultCacheKeysFactory.createEntityKey(id, persister, factory, tenantIdentifier);
+    }
+
+    @Override
+    public Object getCacheKeyId(Object cacheKey) {
+        return DefaultCacheKeysFactory.getEntityId(cacheKey);
+    }
+
 }

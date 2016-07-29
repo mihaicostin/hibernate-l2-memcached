@@ -15,23 +15,37 @@
 
 package com.mc.hibernate.memcached.strategy;
 
+import com.mc.hibernate.memcached.region.MemcachedCollectionRegion;
+import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
+import org.hibernate.cache.internal.DefaultCacheKeysFactory;
+import org.hibernate.cache.spi.CollectionRegion;
 import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.cfg.Settings;
-
-import com.mc.hibernate.memcached.region.MemcachedCollectionRegion;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.persister.collection.CollectionPersister;
 
 public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
         extends AbstractMemcachedAccessStrategy<MemcachedCollectionRegion>
         implements CollectionRegionAccessStrategy {
 
-    public NonStrictReadWriteMemcachedCollectionRegionAccessStrategy(MemcachedCollectionRegion region, Settings settings) {
+    public NonStrictReadWriteMemcachedCollectionRegionAccessStrategy(MemcachedCollectionRegion region, SessionFactoryOptions settings) {
         super(region, settings);
     }
 
     @Override
-    public boolean putFromLoad(Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride) throws CacheException {
+    public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
+        return null;
+    }
+
+    @Override
+    public final boolean putFromLoad(SharedSessionContractImplementor session,
+                                     Object key,
+                                     Object value,
+                                     long txTimestamp,
+                                     Object version,
+                                     boolean minimalPutOverride) throws CacheException {
         if (minimalPutOverride && region.getCache().get(key) != null) {
             return false;
         } else {
@@ -40,16 +54,28 @@ public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
         }
     }
 
+    @Override
+    public SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws CacheException {
+        return null;
+    }
+
+    @Override
+    public void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
+        region().remove(key);
+    }
+
     public Object get(Object key, long txTimestamp) throws CacheException {
         return region.getCache().get(key);
     }
 
-    public SoftLock lockItem(Object key, Object version) throws CacheException {
-        return null;
+    @Override
+    public Object generateCacheKey(Object id, CollectionPersister persister, SessionFactoryImplementor factory, String tenantIdentifier) {
+        return DefaultCacheKeysFactory.createCollectionKey(id, persister, factory, tenantIdentifier);
     }
 
-    public void unlockItem(Object key, SoftLock lock) throws CacheException {
-        region.getCache().remove(key);
+    @Override
+    public Object getCacheKeyId(Object cacheKey) {
+        return DefaultCacheKeysFactory.getCollectionId(cacheKey);
     }
 
 }

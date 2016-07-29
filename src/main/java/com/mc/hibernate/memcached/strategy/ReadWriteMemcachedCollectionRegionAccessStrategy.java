@@ -15,17 +15,30 @@
 
 package com.mc.hibernate.memcached.strategy;
 
-import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
-import org.hibernate.cfg.Settings;
-
 import com.mc.hibernate.memcached.region.MemcachedCollectionRegion;
+import org.hibernate.boot.spi.SessionFactoryOptions;
+import org.hibernate.cache.internal.DefaultCacheKeysFactory;
+import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.persister.collection.CollectionPersister;
 
 public class ReadWriteMemcachedCollectionRegionAccessStrategy
         extends AbstractReadWriteMemcachedAccessStrategy<MemcachedCollectionRegion>
         implements CollectionRegionAccessStrategy {
 
-    public ReadWriteMemcachedCollectionRegionAccessStrategy(MemcachedCollectionRegion region, Settings settings) {
+    public ReadWriteMemcachedCollectionRegionAccessStrategy(MemcachedCollectionRegion region, SessionFactoryOptions settings) {
         super(region, settings, region.getCacheDataDescription());
+    }
+
+
+    @Override
+    public Object generateCacheKey(Object id, CollectionPersister persister, SessionFactoryImplementor factory, String tenantIdentifier) {
+        return DefaultCacheKeysFactory.createCollectionKey(id, persister, factory, tenantIdentifier);
+    }
+
+    @Override
+    public Object getCacheKeyId(Object cacheKey) {
+        return DefaultCacheKeysFactory.getCollectionId(cacheKey);
     }
 
 }

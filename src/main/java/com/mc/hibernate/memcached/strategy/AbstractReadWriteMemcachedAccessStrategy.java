@@ -15,19 +15,19 @@
 
 package com.mc.hibernate.memcached.strategy;
 
+import com.mc.hibernate.memcached.region.AbstractMemcachedRegion;
+import org.hibernate.boot.spi.SessionFactoryOptions;
+import org.hibernate.cache.CacheException;
+import org.hibernate.cache.spi.CacheDataDescription;
+import org.hibernate.cache.spi.access.SoftLock;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.CacheDataDescription;
-import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.cfg.Settings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.mc.hibernate.memcached.region.AbstractMemcachedRegion;
 
 public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends AbstractMemcachedRegion> extends AbstractMemcachedAccessStrategy<T> {
 
@@ -41,21 +41,21 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
     /**
      * Creates a read/write cache access strategy around the given cache region.
      */
-    public AbstractReadWriteMemcachedAccessStrategy(T region, Settings settings, CacheDataDescription cacheDataDescription) {
+    public AbstractReadWriteMemcachedAccessStrategy(T region, SessionFactoryOptions settings, CacheDataDescription cacheDataDescription) {
         super(region, settings);
         this.versionComparator = cacheDataDescription.getVersionComparator();
     }
 
     /**
      * Returns <code>null</code> if the item is not readable.  Locked items are not readable, nor are items created
-     * after the start of this transaction.
+     * afterQuery the start of this transaction.
      */
-    public final Object get(Object key, long txTimestamp) throws CacheException {
+    public final Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
         readLockIfNeeded(key);
         try {
-            Lockable item = (Lockable) region.getCache().get(key);
+            final Lockable item = (Lockable) region().get(key);
 
-            boolean readable = item != null && item.isReadable(txTimestamp);
+            final boolean readable = item != null && item.isReadable(txTimestamp);
             if (readable) {
                 return item.getValue();
             } else {
@@ -71,14 +71,21 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
      * key.
      */
     @Override
-    public final boolean putFromLoad(Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride)
+    public final boolean putFromLoad(
+            SharedSessionContractImplementor session,
+            Object key,
+            Object value,
+            long txTimestamp,
+            Object version,
+            boolean minimalPutOverride)
             throws CacheException {
+
         region.getCache().lock(key);
         try {
-            Lockable item = (Lockable) region.getCache().get(key);
-            boolean writeable = item == null || item.isWriteable(txTimestamp, version, versionComparator);
+            final Lockable item = (Lockable) region().get(key);
+            final boolean writeable = item == null || item.isWriteable(txTimestamp, version, versionComparator);
             if (writeable) {
-                region.getCache().put(key, new Item(value, version, region.nextTimestamp()));
+                region().put(key, new Item(value, version, region().nextTimestamp()));
                 return true;
             } else {
                 return false;
@@ -91,13 +98,17 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
     /**
      * Soft-lock a cache item.
      */
-    public final SoftLock lockItem(Object key, Object version) throws CacheException {
+    public final SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws CacheException {
         region.getCache().lock(key);
         try {
-            Lockable item = (Lockable) region.getCache().get(key);
-            long timeout = region.nextTimestamp() + region.getTimeout();
-            final Lock lock = (item == null) ? new Lock(timeout, uuid, nextLockId(), version) : item.lock(timeout, uuid, nextLockId());
-            region.getCache().put(key, lock);
+            final Lockable item = (Lockable) region().get(key);
+            final long timeout = region().nextTimestamp() + region().getTimeout();
+            final Lock lock = (item == null) ? new Lock(timeout, uuid, nextLockId(), version) : item.lock(
+                    timeout,
+                    uuid,
+                    nextLockId()
+            );
+            region().put(key, lock);
             return lock;
         } finally {
             region.getCache().unlock(key);
@@ -107,10 +118,10 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
     /**
      * Soft-unlock a cache item.
      */
-    public final void unlockItem(Object key, SoftLock lock) throws CacheException {
+    public final void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
         region.getCache().lock(key);
         try {
-            Lockable item = (Lockable) region.getCache().get(key);
+            final Lockable item = (Lockable) region().get(key);
 
             if ((item != null) && item.isUnlockable(lock)) {
                 decrementLock(key, (Lock) item);

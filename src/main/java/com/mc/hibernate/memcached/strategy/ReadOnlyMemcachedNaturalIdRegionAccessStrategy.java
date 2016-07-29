@@ -16,60 +16,102 @@
 
 package com.mc.hibernate.memcached.strategy;
 
+import com.mc.hibernate.memcached.region.MemcachedNaturalIdRegion;
+import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
+import org.hibernate.cache.internal.DefaultCacheKeysFactory;
 import org.hibernate.cache.spi.access.NaturalIdRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.cfg.Settings;
-
-import com.mc.hibernate.memcached.region.MemcachedNaturalIdRegion;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.persister.entity.EntityPersister;
 
 
 public class ReadOnlyMemcachedNaturalIdRegionAccessStrategy
         extends AbstractMemcachedAccessStrategy<MemcachedNaturalIdRegion>
         implements NaturalIdRegionAccessStrategy {
 
-    public ReadOnlyMemcachedNaturalIdRegionAccessStrategy(MemcachedNaturalIdRegion region, Settings settings) {
+    public ReadOnlyMemcachedNaturalIdRegionAccessStrategy(MemcachedNaturalIdRegion region, SessionFactoryOptions settings) {
         super(region, settings);
     }
 
-    public Object get(Object key, long txTimestamp) throws CacheException {
-        return region.getCache().get(key);
+    @Override
+    public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
+        return region().get(key);
     }
 
-    public boolean putFromLoad(Object key,
-                               Object value,
-                               long txTimestamp,
-                               Object version,
-                               boolean minimalPutOverride) throws CacheException {
-        if (minimalPutOverride && region.contains(key))
+    @Override
+    public boolean putFromLoad(SharedSessionContractImplementor session, Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride)
+            throws CacheException {
+        if (minimalPutOverride && region.contains(key)) {
             return false;
-
-        region.getCache().put(key, value);
-        return true;
+        } else {
+            region().put(key, value);
+            return true;
+        }
     }
 
-    public SoftLock lockItem(Object key, Object version) throws CacheException {
+    @Override
+    public SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws UnsupportedOperationException {
         return null;
     }
 
-    public void unlockItem(Object key, SoftLock lock) throws CacheException {
-        region.getCache().remove(key);
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * A no-op since this cache is read-only
+     */
+    @Override
+    public void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
+        region().remove(key);
     }
 
-    public boolean insert(Object key, Object value) throws CacheException {
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * This cache is asynchronous hence a no-op
+     */
+    @Override
+    public boolean insert(SharedSessionContractImplementor session, Object key, Object value) throws CacheException {
         return false;
     }
 
-    public boolean afterInsert(Object key, Object value) throws CacheException {
-        region.getCache().put(key, value);
+    @Override
+    public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value) throws CacheException {
+        region().put(key, value);
         return true;
     }
 
-    public boolean update(Object key, Object value) throws CacheException {
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Throws UnsupportedOperationException since this cache is read-only
+     *
+     * @throws UnsupportedOperationException always
+     */
+    @Override
+    public boolean update(SharedSessionContractImplementor session, Object key, Object value) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Can't write to a readonly object");
     }
 
-    public boolean afterUpdate(Object key, Object value, SoftLock lock) throws CacheException {
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Throws UnsupportedOperationException since this cache is read-only
+     *
+     * @throws UnsupportedOperationException always
+     */
+    @Override
+    public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, SoftLock lock) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Can't write to a readonly object");
+    }
+
+    @Override
+    public Object generateCacheKey(Object[] naturalIdValues, EntityPersister persister, SharedSessionContractImplementor session) {
+        return DefaultCacheKeysFactory.createNaturalIdKey(naturalIdValues, persister, session);
+    }
+
+    @Override
+    public Object[] getNaturalIdValues(Object cacheKey) {
+        return DefaultCacheKeysFactory.getNaturalIdValues(cacheKey);
     }
 }

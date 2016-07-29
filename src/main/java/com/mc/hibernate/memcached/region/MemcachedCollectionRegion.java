@@ -15,31 +15,30 @@
 
 package com.mc.hibernate.memcached.region;
 
-import java.util.Properties;
-
-import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.CacheDataDescription;
-import org.hibernate.cache.spi.CollectionRegion;
-import org.hibernate.cache.spi.access.AccessType;
-import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
-import org.hibernate.cfg.Settings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mc.hibernate.memcached.Memcache;
 import com.mc.hibernate.memcached.MemcachedCache;
 import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedCollectionRegionAccessStrategy;
 import com.mc.hibernate.memcached.strategy.ReadOnlyMemcachedCollectionRegionAccessStrategy;
 import com.mc.hibernate.memcached.strategy.ReadWriteMemcachedCollectionRegionAccessStrategy;
 import com.mc.hibernate.memcached.strategy.TransactionalMemcachedCollectionRegionAccessStrategy;
+import org.hibernate.boot.spi.SessionFactoryOptions;
+import org.hibernate.cache.CacheException;
+import org.hibernate.cache.spi.CacheDataDescription;
+import org.hibernate.cache.spi.CollectionRegion;
+import org.hibernate.cache.spi.access.AccessType;
+import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 public class MemcachedCollectionRegion extends AbstractMemcachedRegion implements CollectionRegion {
 
     private final Logger log = LoggerFactory.getLogger(MemcachedCollectionRegion.class);
     private final CacheDataDescription metadata;
-    private final Settings settings;
+    private final SessionFactoryOptions settings;
 
-    public MemcachedCollectionRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Properties properties, Memcache client) {
+    public MemcachedCollectionRegion(MemcachedCache cache, SessionFactoryOptions settings, CacheDataDescription metadata, Properties properties, Memcache client) {
         super(cache);
         this.metadata = metadata;
         this.settings = settings;
