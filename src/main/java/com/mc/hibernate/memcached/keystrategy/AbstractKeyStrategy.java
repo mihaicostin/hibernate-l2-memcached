@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractKeyStrategy implements KeyStrategy {
 
-    public static final int MAX_KEY_LENGTH = 250;
+    private static final int MAX_KEY_LENGTH = 250;
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 

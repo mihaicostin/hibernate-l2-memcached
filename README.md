@@ -8,20 +8,8 @@ A library for using Memcached as a second level distributed cache in Hibernate.
       * https://github.com/raykrueger/hibernate-memcached
       * https://github.com/kcarlson/hibernate-memcached
 
-#Versions
 
-## 1.1.0
-
-Memcached client now respects the region timeout property
- - [Issue #1](https://github.com/mihaicostin/hibernate-l2-memcached/issues/1)
-```xml
-<property name="hibernate.memcached.REGION.cacheTimeSeconds">10</property>
-```
-
-  
-## 1.0.0
-* Compatible with hibernate 4.3.x
-* Example config:
+#Example config:
 
 ```xml
 <property name="hibernate.cache.region.factory_class">com.mc.hibernate.memcached.MemcachedRegionFactory</property>
@@ -42,4 +30,28 @@ In order to use this library as a maven dependency, just add the following depen
             <version>1.1.0</version>
         </dependency>
 ```
+
+
+#Versions
+
+## 5.2.1.0
+
+- Switched to a new versioning schema, that goes hand in had with [hibernate](http://hibernate.org/orm/).
+    - Version 5.2.1.x is developed for (and compatible with) hibernate 5.2.1.Final
+- Update [spymemcached](https://github.com/couchbase/spymemcached) to the latest version: 2.12.1
+
+
+### Known issues
+- SecondLevelCacheStatistics won't work with this adapter since it tries to get the cache content as a Map (and that's not easily done with memcached)
+
+## 1.1.0
+
+Memcached client now respects the region timeout property
+ - [Issue #1](https://github.com/mihaicostin/hibernate-l2-memcached/issues/1)
+```xml
+<property name="hibernate.memcached.REGION.cacheTimeSeconds">10</property>
+```
+
+## 1.0.0
+* Compatible with hibernate 4.3.x
 

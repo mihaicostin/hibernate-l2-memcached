@@ -16,6 +16,7 @@
 package com.mc.hibernate.memcached;
 
 import com.mc.hibernate.memcached.region.*;
+import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.*;
 import org.hibernate.cache.spi.access.AccessType;
@@ -37,7 +38,7 @@ public class MemcachedRegionFactory implements RegionFactory {
 
     private Properties properties;
     private Memcache client;
-    private Settings settings;
+    private SessionFactoryOptions settings;
 
     public MemcachedRegionFactory(Properties properties) {
         this.properties = properties;
@@ -46,7 +47,9 @@ public class MemcachedRegionFactory implements RegionFactory {
     public MemcachedRegionFactory() {
     }
 
-    public void start(Settings settings, Properties properties) throws CacheException {
+    @Override
+    public void start(SessionFactoryOptions settings, Properties properties) throws CacheException {
+
         this.settings = settings;
         this.properties = properties;
         log.info("Starting MemcachedClient...");
@@ -56,6 +59,8 @@ public class MemcachedRegionFactory implements RegionFactory {
             throw new CacheException("Unable to initialize MemcachedClient", e);
         }
     }
+
+
 
     public void stop() {
         if (client != null) {
@@ -78,8 +83,7 @@ public class MemcachedRegionFactory implements RegionFactory {
     }
 
     public EntityRegion buildEntityRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
-        return new MemcachedEntityRegion(getCache(regionName), settings,
-                metadata, properties, client);
+        return new MemcachedEntityRegion(getCache(regionName), settings, metadata, properties, client);
     }
 
     public NaturalIdRegion buildNaturalIdRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {

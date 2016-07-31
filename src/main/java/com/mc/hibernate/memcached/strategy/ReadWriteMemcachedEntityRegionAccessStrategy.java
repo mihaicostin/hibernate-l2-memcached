@@ -15,31 +15,46 @@
 
 package com.mc.hibernate.memcached.strategy;
 
+import com.mc.hibernate.memcached.region.MemcachedEntityRegion;
+import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
+import org.hibernate.cache.internal.DefaultCacheKeysFactory;
 import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.cfg.Settings;
-
-import com.mc.hibernate.memcached.region.MemcachedEntityRegion;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.persister.entity.EntityPersister;
 
 public class ReadWriteMemcachedEntityRegionAccessStrategy
         extends AbstractReadWriteMemcachedAccessStrategy<MemcachedEntityRegion>
         implements EntityRegionAccessStrategy {
 
-    public ReadWriteMemcachedEntityRegionAccessStrategy(MemcachedEntityRegion region, Settings settings) {
+    public ReadWriteMemcachedEntityRegionAccessStrategy(MemcachedEntityRegion region, SessionFactoryOptions settings) {
         super(region, settings, region.getCacheDataDescription());
     }
 
-    public boolean insert(Object key, Object value, Object version) throws CacheException {
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * A no-op since this is an asynchronous cache access strategy.
+     */
+    @Override
+    public boolean insert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
         return false;
     }
 
-    public boolean afterInsert(Object key, Object value, Object version) throws CacheException {
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Inserts will only succeed if there is no existing value mapped to this key.
+     */
+    @Override
+    public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
         region.getCache().lock(key);
         try {
-            Lockable item = (Lockable) region.getCache().get(key);
+            final Lockable item = (Lockable) region().get(key);
             if (item == null) {
-                region.getCache().put(key, new Item(value, version, region.nextTimestamp()));
+                region().put(key, new Item(value, version, region().nextTimestamp()));
                 return true;
             } else {
                 return false;
@@ -49,32 +64,58 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
         }
     }
 
-    public boolean update(Object key, Object value, Object currentVersion, Object previousVersion) throws CacheException {
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * A no-op since this is an asynchronous cache access strategy.
+     */
+    @Override
+    public boolean update(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion)
+            throws CacheException {
         return false;
     }
 
-    public boolean afterUpdate(Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock) throws CacheException {
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Updates will only succeed if this entry was locked by this transaction and exclusively this transaction for the
+     * duration of this transaction.  It is important to also note that updates will fail if the soft-lock expired during
+     * the course of this transaction.
+     */
+    @Override
+    public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock)
+            throws CacheException {
         //what should we do with previousVersion here?
         region.getCache().lock(key);
         try {
-            Lockable item = (Lockable) region.getCache().get(key);
+            final Lockable item = (Lockable) region().get(key);
 
             if (item != null && item.isUnlockable(lock)) {
-                Lock lockItem = (Lock) item;
+                final Lock lockItem = (Lock) item;
                 if (lockItem.wasLockedConcurrently()) {
                     decrementLock(key, lockItem);
                     return false;
                 } else {
-                    region.getCache().put(key, new Item(value, currentVersion, region.nextTimestamp()));
+                    region().put(key, new Item(value, currentVersion, region().nextTimestamp()));
                     return true;
                 }
             } else {
-                super.handleLockExpiry(key, null);
+                handleLockExpiry(key, item);
                 return false;
             }
         } finally {
             region.getCache().unlock(key);
         }
+    }
+
+    @Override
+    public Object generateCacheKey(Object id, EntityPersister persister, SessionFactoryImplementor factory, String tenantIdentifier) {
+        return DefaultCacheKeysFactory.createEntityKey(id, persister, factory, tenantIdentifier);
+    }
+
+    @Override
+    public Object getCacheKeyId(Object cacheKey) {
+        return DefaultCacheKeysFactory.getEntityId(cacheKey);
     }
 
 }

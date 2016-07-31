@@ -15,40 +15,70 @@
 
 package com.mc.hibernate.memcached.strategy;
 
+import com.mc.hibernate.memcached.region.MemcachedCollectionRegion;
+import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
+import org.hibernate.cache.internal.DefaultCacheKeysFactory;
 import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.cfg.Settings;
-
-import com.mc.hibernate.memcached.region.MemcachedCollectionRegion;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.persister.collection.CollectionPersister;
 
 public class TransactionalMemcachedCollectionRegionAccessStrategy
         extends AbstractMemcachedAccessStrategy<MemcachedCollectionRegion>
         implements CollectionRegionAccessStrategy {
 
-    public TransactionalMemcachedCollectionRegionAccessStrategy(MemcachedCollectionRegion region, Settings settings) {
+    public TransactionalMemcachedCollectionRegionAccessStrategy(MemcachedCollectionRegion region, SessionFactoryOptions settings) {
         super(region, settings);
     }
 
     @Override
-    public boolean putFromLoad(Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride) throws CacheException {
+    public boolean putFromLoad(
+            SharedSessionContractImplementor session,
+            Object key,
+            Object value,
+            long txTimestamp,
+            Object version,
+            boolean minimalPutOverride) throws CacheException {
+
         if (minimalPutOverride && region.getCache().get(key) != null) {
             return false;
+        } else {
+            region.getCache().put(key, value);
+            return true;
         }
-
-        region.getCache().put(key, value);
-        return true;
     }
 
-    public Object get(Object key, long txTimestamp) throws CacheException {
+    public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
         return region.getCache().get(key);
     }
 
-    public SoftLock lockItem(Object key, Object version) throws CacheException {
+    @Override
+    public SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws CacheException {
         return null;
     }
 
-    public void unlockItem(Object key, SoftLock lock) throws CacheException {
+    @Override
+    public void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
+        // no-op
+    }
+
+
+    @Override
+    public void remove(SharedSessionContractImplementor session, Object key) throws CacheException {
+        region.getCache().remove(key);
+    }
+
+
+    @Override
+    public Object generateCacheKey(Object id, CollectionPersister persister, SessionFactoryImplementor factory, String tenantIdentifier) {
+        return DefaultCacheKeysFactory.createCollectionKey(id, persister, factory, tenantIdentifier);
+    }
+
+    @Override
+    public Object getCacheKeyId(Object cacheKey) {
+        return DefaultCacheKeysFactory.getCollectionId(cacheKey);
     }
 
 }

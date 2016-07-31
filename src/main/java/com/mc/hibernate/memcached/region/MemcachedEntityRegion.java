@@ -16,23 +16,22 @@
 package com.mc.hibernate.memcached.region;
 
 
-import java.util.Properties;
-
-import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.CacheDataDescription;
-import org.hibernate.cache.spi.EntityRegion;
-import org.hibernate.cache.spi.access.AccessType;
-import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
-import org.hibernate.cfg.Settings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mc.hibernate.memcached.Memcache;
 import com.mc.hibernate.memcached.MemcachedCache;
 import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedEntityRegionAccessStrategy;
 import com.mc.hibernate.memcached.strategy.ReadOnlyMemcachedEntityRegionAccessStrategy;
 import com.mc.hibernate.memcached.strategy.ReadWriteMemcachedEntityRegionAccessStrategy;
 import com.mc.hibernate.memcached.strategy.TransactionalMemcachedEntityRegionAccessStrategy;
+import org.hibernate.boot.spi.SessionFactoryOptions;
+import org.hibernate.cache.CacheException;
+import org.hibernate.cache.spi.CacheDataDescription;
+import org.hibernate.cache.spi.EntityRegion;
+import org.hibernate.cache.spi.access.AccessType;
+import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 
 public class MemcachedEntityRegion extends AbstractMemcachedRegion implements EntityRegion {
@@ -40,9 +39,9 @@ public class MemcachedEntityRegion extends AbstractMemcachedRegion implements En
     private final Logger log = LoggerFactory.getLogger(MemcachedEntityRegion.class);
 
     private final CacheDataDescription metadata;
-    private final Settings settings;
+    private final SessionFactoryOptions settings;
 
-    public MemcachedEntityRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Properties properties, Memcache client) {
+    public MemcachedEntityRegion(MemcachedCache cache, SessionFactoryOptions settings, CacheDataDescription metadata, Properties properties, Memcache client) {
         super(cache);
         this.metadata = metadata;
         this.settings = settings;
