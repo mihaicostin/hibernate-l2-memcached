@@ -55,7 +55,7 @@ public class NonStrictReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Since this is a non-strict read/write strategy item locking is not used.
      */
     @Override
@@ -65,7 +65,7 @@ public class NonStrictReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Since this is a non-strict read/write strategy item locking is not used.
      */
     @Override
@@ -75,7 +75,7 @@ public class NonStrictReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Returns <code>false</code> since this is an asynchronous cache access strategy.
      */
     @Override
@@ -85,7 +85,7 @@ public class NonStrictReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Returns <code>false</code> since this is a non-strict read/write cache access strategy
      */
     @Override
@@ -95,7 +95,7 @@ public class NonStrictReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Removes the entry since this is a non-strict read/write cache strategy.
      */
     @Override

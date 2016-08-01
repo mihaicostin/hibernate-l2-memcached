@@ -36,7 +36,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * A no-op since this is an asynchronous cache access strategy.
      */
     @Override
@@ -46,7 +46,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Inserts will only succeed if there is no existing value mapped to this key.
      */
     @Override
@@ -67,7 +67,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * A no-op since this is an asynchronous cache access strategy.
      */
     @Override
@@ -77,7 +77,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Updates will only succeed if this entry was locked by this transaction and exclusively this transaction for the
      * duration of this transaction.  It is important to also note that updates will fail if the soft-lock expired during
      * the course of this transaction.

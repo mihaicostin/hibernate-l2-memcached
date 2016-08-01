@@ -57,7 +57,7 @@ public class ReadOnlyMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * A no-op since this cache is read-only
      */
     @Override
@@ -67,7 +67,7 @@ public class ReadOnlyMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * This cache is asynchronous hence a no-op
      */
     @Override
@@ -83,7 +83,7 @@ public class ReadOnlyMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Throws UnsupportedOperationException since this cache is read-only
      *
      * @throws UnsupportedOperationException always
@@ -95,7 +95,7 @@ public class ReadOnlyMemcachedNaturalIdRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Throws UnsupportedOperationException since this cache is read-only
      *
      * @throws UnsupportedOperationException always

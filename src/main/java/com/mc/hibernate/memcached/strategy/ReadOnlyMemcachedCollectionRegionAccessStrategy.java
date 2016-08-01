@@ -56,7 +56,7 @@ public class ReadOnlyMemcachedCollectionRegionAccessStrategy
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * A no-op since this cache is read-only
      */
     @Override
