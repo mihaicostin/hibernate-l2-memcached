@@ -1,7 +1,8 @@
 # Hibernate - Memcached
 A library for using Memcached as a second level distributed cache in Hibernate.
-  
-  * Works with Hibernate 4
+
+  * Hibernate 5.2.1.Final   : use version 5.2.1.0
+  * Hibernate 4.3.x         : use version 1.1.0
   * Uses spymemcached client
   * Supports entity and query caching.
   * Based on the work done on Hibernate-Memcached for hibernate 3.x
@@ -21,7 +22,7 @@ A library for using Memcached as a second level distributed cache in Hibernate.
 If memcached authentication is required, it can be specified using "hibernate.memcached.username" and "hibernate.memcached.password"
 
 #Maven
-In order to use this library as a maven dependency, just add the following dependency to your pom.
+In order to use this library as a maven dependency, just add the following dependency to your pom (with the desired version)
 
 ```xml
         <dependency>
