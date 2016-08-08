@@ -32,17 +32,6 @@ To install it, you just need to add the following Maven dependency:
 
 If memcached authentication is required, it can be specified using "hibernate.memcached.username" and "hibernate.memcached.password"
 
-#Maven
-In order to use this library as a maven dependency, just add the following dependency to your pom (with the desired version)
-
-```xml
-        <dependency>
-            <groupId>com.github.mihaicostin</groupId>
-            <artifactId>hibernate-l2-memcached</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-```
-
 
 #Versions
 
