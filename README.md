@@ -12,8 +12,7 @@ A library for using Memcached as a second level distributed cache in Hibernate.
 
 #Maven dependency
 
-To install it, you just need to add the following Maven dependency:
-
+To install it, you just need to add the following Maven dependency (check Versions blow for the right version for you):
 ```xml
 <dependency>
     <groupId>com.github.mihaicostin</groupId>
@@ -37,7 +36,8 @@ If memcached authentication is required, it can be specified using "hibernate.me
 #Versions
 
 ## 5.2.7.0
-- Support Hibernate 5.2.7.Final
+- Support Hibernate 5.2.7.Final ([PR](https://github.com/mihaicostin/hibernate-l2-memcached/pull/6) by @akhalikov )
+- Update spymemcached to [2.12.2](https://github.com/couchbase/spymemcached/releases/tag/2.12.2)
 
 ## 5.2.1.0
 
