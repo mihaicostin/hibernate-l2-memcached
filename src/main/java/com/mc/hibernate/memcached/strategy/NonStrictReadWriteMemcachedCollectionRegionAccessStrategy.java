@@ -70,12 +70,12 @@ public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
 
     @Override
     public Object generateCacheKey(Object id, CollectionPersister persister, SessionFactoryImplementor factory, String tenantIdentifier) {
-        return DefaultCacheKeysFactory.createCollectionKey(id, persister, factory, tenantIdentifier);
+        return DefaultCacheKeysFactory.INSTANCE.createCollectionKey(id, persister, factory, tenantIdentifier);
     }
 
     @Override
     public Object getCacheKeyId(Object cacheKey) {
-        return DefaultCacheKeysFactory.getCollectionId(cacheKey);
+        return DefaultCacheKeysFactory.INSTANCE.getCollectionId(cacheKey);
     }
 
 }

@@ -108,12 +108,12 @@ public class ReadOnlyMemcachedEntityRegionAccessStrategy
 
     @Override
     public Object generateCacheKey(Object id, EntityPersister persister, SessionFactoryImplementor factory, String tenantIdentifier) {
-        return DefaultCacheKeysFactory.createEntityKey(id, persister, factory, tenantIdentifier);
+        return DefaultCacheKeysFactory.INSTANCE.createEntityKey(id, persister, factory, tenantIdentifier);
     }
 
     @Override
     public Object getCacheKeyId(Object cacheKey) {
-        return DefaultCacheKeysFactory.getEntityId(cacheKey);
+        return DefaultCacheKeysFactory.INSTANCE.getEntityId(cacheKey);
     }
 
 }
