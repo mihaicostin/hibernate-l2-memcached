@@ -12,7 +12,7 @@ A library for using Memcached as a second level distributed cache in Hibernate.
 
 #Maven dependency
 
-To install it, you just need to add the following Maven dependency (check Versions blow for the right version for you):
+To install it, you just need to add the following Maven dependency (check Versions for the right version for you):
 ```xml
 <dependency>
     <groupId>com.github.mihaicostin</groupId>
