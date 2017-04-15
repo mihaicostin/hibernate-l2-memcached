@@ -3,6 +3,7 @@ A library for using Memcached as a second level distributed cache in Hibernate.
 
   * Hibernate 5.2.7.Final   : use version 5.2.7.0
   * Hibernate 5.2.1.Final   : use version 5.2.1.0
+  * Hibernate 5.0.1.Final   : use version 5.0.1.0
   * Hibernate 4.3.x         : use version 1.1.0
   * Uses spymemcached client
   * Supports entity and query caching.
