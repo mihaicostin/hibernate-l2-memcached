@@ -22,7 +22,7 @@ import org.hibernate.cache.internal.DefaultCacheKeysFactory;
 import org.hibernate.cache.spi.CacheDataDescription;
 import org.hibernate.cache.spi.access.NaturalIdRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.entity.EntityPersister;
 
 public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
@@ -40,7 +40,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
      * A no-op since this is an asynchronous cache access strategy.
      */
     @Override
-    public boolean insert(SharedSessionContractImplementor session, Object key, Object value) throws CacheException {
+    public boolean insert(SessionImplementor session, Object key, Object value) throws CacheException {
         return false;
     }
 
@@ -50,7 +50,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
      * Inserts will only succeed if there is no existing value mapped to this key.
      */
     @Override
-    public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value) throws CacheException {
+    public boolean afterInsert(SessionImplementor session, Object key, Object value) throws CacheException {
         region.getCache().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);
@@ -71,7 +71,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
      * A no-op since this is an asynchronous cache access strategy.
      */
     @Override
-    public boolean update(SharedSessionContractImplementor session, Object key, Object value) throws CacheException {
+    public boolean update(SessionImplementor session, Object key, Object value) throws CacheException {
         return false;
     }
 
@@ -83,7 +83,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
      * the course of this transaction.
      */
     @Override
-    public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, SoftLock lock) throws CacheException {
+    public boolean afterUpdate(SessionImplementor session, Object key, Object value, SoftLock lock) throws CacheException {
         //what should we do with previousVersion here?
         region.getCache().lock(key);
         try {
@@ -108,7 +108,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
     }
 
     @Override
-    public Object generateCacheKey(Object[] naturalIdValues, EntityPersister persister, SharedSessionContractImplementor session) {
+    public Object generateCacheKey(Object[] naturalIdValues, EntityPersister persister, SessionImplementor session) {
         return DefaultCacheKeysFactory.createNaturalIdKey(naturalIdValues, persister, session);
     }
 

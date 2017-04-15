@@ -19,9 +19,8 @@ import com.mc.hibernate.memcached.MemcachedCache;
 import com.mc.hibernate.memcached.region.AbstractMemcachedRegion;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.CollectionRegion;
 import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 
 public abstract class AbstractMemcachedAccessStrategy<T extends AbstractMemcachedRegion> {
 
@@ -49,7 +48,7 @@ public abstract class AbstractMemcachedAccessStrategy<T extends AbstractMemcache
      * This method is a placeholder for method signatures supplied by interfaces pulled in further down the class
      * hierarchy.
      */
-    public final boolean putFromLoad(SharedSessionContractImplementor session, Object key, Object value, long txTimestamp, Object version) throws CacheException {
+    public final boolean putFromLoad(SessionImplementor session, Object key, Object value, long txTimestamp, Object version) throws CacheException {
         return putFromLoad(session, key, value, txTimestamp, version, settings.isMinimalPutsEnabled());
     }
 
@@ -57,7 +56,7 @@ public abstract class AbstractMemcachedAccessStrategy<T extends AbstractMemcache
      * This method is a placeholder for method signatures supplied by interfaces pulled in further down the class
      * hierarchy.
      */
-    public abstract boolean putFromLoad(SharedSessionContractImplementor session, Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride)
+    public abstract boolean putFromLoad(SessionImplementor session, Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride)
             throws CacheException;
 
     /**
@@ -82,7 +81,7 @@ public abstract class AbstractMemcachedAccessStrategy<T extends AbstractMemcache
     /**
      * A no-op since this is an asynchronous cache access strategy.
      */
-    public void remove(SharedSessionContractImplementor session, Object key) throws CacheException {
+    public void remove(SessionImplementor session, Object key) throws CacheException {
     }
 
     /**

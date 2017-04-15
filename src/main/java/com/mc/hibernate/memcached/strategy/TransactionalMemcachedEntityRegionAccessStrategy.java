@@ -23,7 +23,7 @@ import org.hibernate.cache.internal.DefaultCacheKeysFactory;
 import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.entity.EntityPersister;
 
 public class TransactionalMemcachedEntityRegionAccessStrategy
@@ -41,14 +41,14 @@ public class TransactionalMemcachedEntityRegionAccessStrategy
      * {@inheritDoc}
      */
     @Override
-    public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
+    public Object get(SessionImplementor session, Object key, long txTimestamp) throws CacheException {
         return cache.get(key);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean insert(SharedSessionContractImplementor session, Object key, Object value, Object version)
+    public boolean insert(SessionImplementor session, Object key, Object value, Object version)
             throws CacheException {
 
         //OptimisticCache? versioning?
@@ -67,7 +67,7 @@ public class TransactionalMemcachedEntityRegionAccessStrategy
      * {@inheritDoc}
      */
     public boolean putFromLoad(
-            SharedSessionContractImplementor session,
+            SessionImplementor session,
             Object key,
             Object value,
             long txTimestamp,
@@ -86,7 +86,7 @@ public class TransactionalMemcachedEntityRegionAccessStrategy
      * {@inheritDoc}
      */
     @Override
-    public void remove(SharedSessionContractImplementor session, Object key) throws CacheException {
+    public void remove(SessionImplementor session, Object key) throws CacheException {
         cache.remove(key);
     }
 
@@ -94,7 +94,7 @@ public class TransactionalMemcachedEntityRegionAccessStrategy
      * {@inheritDoc}
      */
     @Override
-    public boolean update(SharedSessionContractImplementor session,
+    public boolean update(SessionImplementor session,
                           Object key, Object value,
                           Object currentVersion, Object previousVersion) throws CacheException {
         cache.put(key, value);
@@ -103,22 +103,22 @@ public class TransactionalMemcachedEntityRegionAccessStrategy
 
 
     @Override
-    public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value, Object version) {
+    public boolean afterInsert(SessionImplementor session, Object key, Object value, Object version) {
         return false;
     }
 
     @Override
-    public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock) {
+    public boolean afterUpdate(SessionImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock) {
         return false;
     }
 
     @Override
-    public SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws CacheException {
+    public SoftLock lockItem(SessionImplementor session, Object key, Object version) throws CacheException {
         return null;
     }
 
     @Override
-    public void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
+    public void unlockItem(SessionImplementor session, Object key, SoftLock lock) throws CacheException {
         // no-op
     }
 

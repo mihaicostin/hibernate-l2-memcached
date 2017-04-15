@@ -20,7 +20,7 @@ import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;
 import org.hibernate.cache.spi.access.SoftLock;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
      * Returns <code>null</code> if the item is not readable.  Locked items are not readable, nor are items created
      * afterQuery the start of this transaction.
      */
-    public final Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
+    public final Object get(SessionImplementor session, Object key, long txTimestamp) throws CacheException {
         readLockIfNeeded(key);
         try {
             final Lockable item = (Lockable) region().get(key);
@@ -72,7 +72,7 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
      */
     @Override
     public final boolean putFromLoad(
-            SharedSessionContractImplementor session,
+            SessionImplementor session,
             Object key,
             Object value,
             long txTimestamp,
@@ -98,7 +98,7 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
     /**
      * Soft-lock a cache item.
      */
-    public final SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws CacheException {
+    public final SoftLock lockItem(SessionImplementor session, Object key, Object version) throws CacheException {
         region.getCache().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);
@@ -118,7 +118,7 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
     /**
      * Soft-unlock a cache item.
      */
-    public final void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
+    public final void unlockItem(SessionImplementor session, Object key, SoftLock lock) throws CacheException {
         region.getCache().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);

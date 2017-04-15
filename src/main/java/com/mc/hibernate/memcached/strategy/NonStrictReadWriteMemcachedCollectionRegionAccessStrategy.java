@@ -19,11 +19,10 @@ import com.mc.hibernate.memcached.region.MemcachedCollectionRegion;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.internal.DefaultCacheKeysFactory;
-import org.hibernate.cache.spi.CollectionRegion;
 import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
 
 public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
@@ -35,12 +34,12 @@ public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
     }
 
     @Override
-    public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
+    public Object get(SessionImplementor session, Object key, long txTimestamp) throws CacheException {
         return null;
     }
 
     @Override
-    public final boolean putFromLoad(SharedSessionContractImplementor session,
+    public final boolean putFromLoad(SessionImplementor session,
                                      Object key,
                                      Object value,
                                      long txTimestamp,
@@ -55,12 +54,12 @@ public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
     }
 
     @Override
-    public SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws CacheException {
+    public SoftLock lockItem(SessionImplementor session, Object key, Object version) throws CacheException {
         return null;
     }
 
     @Override
-    public void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
+    public void unlockItem(SessionImplementor session, Object key, SoftLock lock) throws CacheException {
         region().remove(key);
     }
 

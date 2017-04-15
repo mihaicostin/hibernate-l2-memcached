@@ -22,7 +22,7 @@ import org.hibernate.cache.internal.DefaultCacheKeysFactory;
 import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.entity.EntityPersister;
 
 public class ReadWriteMemcachedEntityRegionAccessStrategy
@@ -39,7 +39,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
      * A no-op since this is an asynchronous cache access strategy.
      */
     @Override
-    public boolean insert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
+    public boolean insert(SessionImplementor session, Object key, Object value, Object version) throws CacheException {
         return false;
     }
 
@@ -49,7 +49,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
      * Inserts will only succeed if there is no existing value mapped to this key.
      */
     @Override
-    public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
+    public boolean afterInsert(SessionImplementor session, Object key, Object value, Object version) throws CacheException {
         region.getCache().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);
@@ -70,7 +70,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
      * A no-op since this is an asynchronous cache access strategy.
      */
     @Override
-    public boolean update(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion)
+    public boolean update(SessionImplementor session, Object key, Object value, Object currentVersion, Object previousVersion)
             throws CacheException {
         return false;
     }
@@ -83,7 +83,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
      * the course of this transaction.
      */
     @Override
-    public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock)
+    public boolean afterUpdate(SessionImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock)
             throws CacheException {
         //what should we do with previousVersion here?
         region.getCache().lock(key);

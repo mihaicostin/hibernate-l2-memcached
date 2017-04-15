@@ -22,7 +22,7 @@ import org.hibernate.cache.internal.DefaultCacheKeysFactory;
 import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.entity.EntityPersister;
 
 public class ReadOnlyMemcachedEntityRegionAccessStrategy
@@ -34,12 +34,12 @@ public class ReadOnlyMemcachedEntityRegionAccessStrategy
     }
 
     @Override
-    public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
+    public Object get(SessionImplementor session, Object key, long txTimestamp) throws CacheException {
         return region().get(key);
     }
 
     @Override
-    public boolean putFromLoad(SharedSessionContractImplementor session, Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride)
+    public boolean putFromLoad(SessionImplementor session, Object key, Object value, long txTimestamp, Object version, boolean minimalPutOverride)
             throws CacheException {
         if (minimalPutOverride && region.getCache().get(key) != null) {
             return false;
@@ -50,7 +50,7 @@ public class ReadOnlyMemcachedEntityRegionAccessStrategy
     }
 
     @Override
-    public SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws UnsupportedOperationException {
+    public SoftLock lockItem(SessionImplementor session, Object key, Object version) throws UnsupportedOperationException {
         return null;
     }
 
@@ -60,7 +60,7 @@ public class ReadOnlyMemcachedEntityRegionAccessStrategy
      * A no-op since this cache is read-only
      */
     @Override
-    public void unlockItem(SharedSessionContractImplementor session, Object key, SoftLock lock) throws CacheException {
+    public void unlockItem(SessionImplementor session, Object key, SoftLock lock) throws CacheException {
         evict(key);
     }
 
@@ -70,12 +70,12 @@ public class ReadOnlyMemcachedEntityRegionAccessStrategy
      * This cache is asynchronous hence a no-op
      */
     @Override
-    public boolean insert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
+    public boolean insert(SessionImplementor session, Object key, Object value, Object version) throws CacheException {
         return false;
     }
 
     @Override
-    public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
+    public boolean afterInsert(SessionImplementor session, Object key, Object value, Object version) throws CacheException {
         region().put(key, value);
         return true;
     }
@@ -88,7 +88,7 @@ public class ReadOnlyMemcachedEntityRegionAccessStrategy
      * @throws UnsupportedOperationException always
      */
     @Override
-    public boolean update(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion)
+    public boolean update(SessionImplementor session, Object key, Object value, Object currentVersion, Object previousVersion)
             throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Can't write to a readonly object");
     }
@@ -101,7 +101,7 @@ public class ReadOnlyMemcachedEntityRegionAccessStrategy
      * @throws UnsupportedOperationException always
      */
     @Override
-    public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock)
+    public boolean afterUpdate(SessionImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock)
             throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Can't write to a readonly object");
     }
