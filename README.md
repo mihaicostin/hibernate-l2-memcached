@@ -66,7 +66,7 @@ If memcached are running on a remote server, e.g. on AWS ElastiCache, you can sp
 In order to specify a property for a specific region add the region name right after `memcached`. ex: `hibernate.memcached.myregion.cacheTimeSeconds`
 
 # Versions
-Use the version compatible with your hibernate version (ex: Version 5.2.1.x is developed for (and compatible with) hibernate 5.2.1.Final)
+Use the version compatible with your hibernate version (ex: Version 5.2.1.x is developed for and compatible with hibernate 5.2.1.Final)
 
 ## Hibernate 5.2.7.Final - 5.2.10.Final
 *  v 5.2.7.1
