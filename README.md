@@ -14,6 +14,9 @@ To install it, you just need to add the following Maven dependency (check Versio
 </dependency>
 ```
 
+https://mvnrepository.com/artifact/com.github.mihaicostin/hibernate-l2-memcached
+
+
 # Example config:
 
 ```xml
