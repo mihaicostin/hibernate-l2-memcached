@@ -15,9 +15,14 @@
 
 package com.mc.hibernate.memcached;
 
+import com.mc.hibernate.memcached.keystrategy.KeyStrategy;
 import com.mc.hibernate.memcached.keystrategy.Sha1KeyStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Config {
+
+    private final Logger log = LoggerFactory.getLogger(Config.class);
 
     public static final String PROP_PREFIX = "hibernate.memcached.";
 
@@ -62,6 +67,21 @@ public class Config {
                 Sha1KeyStrategy.class.getName());
         return props.get(cacheRegionPrefix(cacheRegion) + KEY_STRATEGY, globalKeyStrategy);
     }
+
+    private KeyStrategy instantiateKeyStrategy(String cls) {
+        try {
+            return (KeyStrategy) Class.forName(cls).newInstance();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            log.warn("Could not instantiate keyStrategy class " + cls + ". Will use default: Sha1KeyStrategy", e);
+        }
+        return new Sha1KeyStrategy();
+    }
+
+    public KeyStrategy getKeyStrategy(String cacheRegion) {
+        String strategyClassName = getKeyStrategyName(cacheRegion);
+        return instantiateKeyStrategy(strategyClassName);
+    }
+
 
     public boolean isClearSupported(String cacheRegion) {
         boolean globalClearSupported = props.getBoolean(PROP_CLEAR_SUPPORTED,

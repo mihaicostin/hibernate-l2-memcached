@@ -42,8 +42,9 @@ import java.util.Map;
  * For these reasons it is not recommended to rely on clear() as a regular production functionality,
  * it is very expensive and generally not very useful anyway.
  * <p>
- * The MemcachedCache treats Hibernate cache regions as namespaces in Memcached. For more information see the
- * <a href="https://code.google.com/p/memcached/wiki/NewProgrammingTricks#Namespacing">memcached FAQ</a>.
+ * The MemcachedCache treats Hibernate cache regions as namespaces in Memcached.
+ * For more information see the
+ * <a href="https://github.com/memcached/memcached/wiki/ProgrammingTricks#deleting-by-namespace">memcached FAQ</a>.
  *
  * @author Ray Krueger
  */
@@ -65,8 +66,23 @@ public class MemcachedCache {
     public MemcachedCache(String regionName, Memcache memcachedClient, Config config) {
         this.regionName = (regionName != null) ? regionName : "default";
         this.memcache = memcachedClient;
-        this.cacheTimeSeconds = config.getCacheTimeSeconds(this.regionName);
         clearIndexKey = this.regionName.replaceAll("\\s", "") + ":index_key";
+
+        configureInstance(config);
+    }
+
+    private void configureInstance(Config config) {
+
+        this.cacheTimeSeconds = config.getCacheTimeSeconds(this.regionName);
+
+        this.clearSupported = config.isClearSupported(this.regionName);
+
+        this.dogpilePreventionEnabled = config.isDogpilePreventionEnabled(this.regionName);
+        if (this.dogpilePreventionEnabled) {
+            this.dogpilePreventionExpirationFactor = config.getDogpilePreventionExpirationFactor(this.regionName);
+        }
+
+        this.keyStrategy = config.getKeyStrategy(this.regionName);
     }
 
     public int getCacheTimeSeconds() {
