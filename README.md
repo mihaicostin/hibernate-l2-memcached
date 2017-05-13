@@ -32,7 +32,7 @@ To install it, you just need to add the following Maven dependency (check Versio
 <property name="hibernate.memcached.hashAlgorithm">HashAlgorithm.FNV1_64_HASH</property>
 ```
 
-If memcached authentication is required, it can be specified using "hibernate.memcached.username" and "hibernate.memcached.password"
+If memcached authentication is required you can specify username and password:
 
 ```xml
 <property name="hibernate.memcached.username">memcached-username</property>
