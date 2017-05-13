@@ -29,7 +29,7 @@ To install it, you just need to add the following Maven dependency (check Versio
 <property name="hibernate.cache.region.factory_class">com.mc.hibernate.memcached.MemcachedRegionFactory</property>
 <property name="hibernate.memcached.operationTimeout">5000</property>
 <property name="hibernate.memcached.connectionFactory">KetamaConnectionFactory</property>
-<property name="hibernate.memcached.hashAlgorithm">HashAlgorithm.FNV1_64_HASH</property>
+<property name="hibernate.memcached.hashAlgorithm">FNV1_64_HASH</property>
 ```
 
 If memcached authentication is required you can specify username and password:
@@ -44,6 +44,35 @@ If memcached are running on a remote server, e.g. on AWS ElastiCache, you can sp
 ```xml
 <property name="hibernate.memcached.servers">cache.c3wd5k.cfg.euw1.cache.amazonaws.com:11211</property>
 ```
+
+# Config options 
+
+## Targeting the memcached client (net.spy.memcached configurations)
+
+| Property                                  | Default Value |
+|-------------------------------------------|---------------|
+| hibernate.memcached.servers| localhost:11211|
+| hibernate.memcached.operationQueueLength | (default provided by net.spy.memcached.DefaultConnectionFactory) |
+| hibernate.memcached.readBufferSize | (default provided by net.spy.memcached.DefaultConnectionFactory) |
+| hibernate.memcached.operationTimeout | (default provided by net.spy.memcached.DefaultConnectionFactory) |
+| hibernate.memcached.hashAlgorithm | NATIVE_HASH |
+| hibernate.memcached.connectionFactory | DefaultConnectionFactory |
+| hibernate.memcached.daemonMode | false |
+| hibernate.memcached.username | - |
+| hibernate.memcached.password | - |
+
+## Targeting the cache implementation (global or region specific)
+
+| Property                                  | Default Value |
+|-------------------------------------------|---------------|
+| hibernate.memcached.cacheTimeSeconds      |300            |
+| hibernate.memcached.clearSupported        |false          |
+| hibernate.memcached.memcacheClientFactory | com.mc.hibernate.memcached.spymemcached.SpyMemcacheClientFactory |
+| hibernate.memcached.dogpilePrevention     | false |
+| hibernate.memcached.dogpilePrevention.expirationFactor| 2 |
+| hibernate.memcached.keyStrategy | com.mc.hibernate.memcached.keystrategy.Sha1KeyStrategy |
+
+In order to specify a property for a specific region add the region name right after `memcached`. ex: `hibernate.memcached.myregion.cacheTimeSeconds`
 
 # Versions
 

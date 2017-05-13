@@ -64,4 +64,23 @@ public class MemcachedCacheTest extends BaseTest {
         assertEquals(MemcachedCache.DOGPILE_TOKEN, mockCache.get(key + ".dogpileTokenKey"));
     }
 
+    @Test
+    public void testClearCacheWithProperties() {
+        MockMemcached mockCache = new MockMemcached();
+        Properties properties = new Properties();
+        properties.put("hibernate.memcached.clearSupported", "true");
+        Config config = new Config(new PropertiesHelper(properties));
+
+        cache = new MemcachedCache("region", mockCache, config);
+        cache.put("test", "value");
+        Object retrieved = cache.get("test");
+        assertEquals("value", retrieved);
+
+        cache.clear();
+
+        Object retrievedAfterClean = cache.get("test");
+        assertNull(retrievedAfterClean);
+    }
+
+
 }
