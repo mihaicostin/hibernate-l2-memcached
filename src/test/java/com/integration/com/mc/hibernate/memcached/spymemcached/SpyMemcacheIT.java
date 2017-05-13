@@ -11,8 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.SocketAddress;
-import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -54,5 +52,4 @@ public class SpyMemcacheIT {
         Thread.sleep(100);
         assertNull(cache.get("test"));
     }
-
 }

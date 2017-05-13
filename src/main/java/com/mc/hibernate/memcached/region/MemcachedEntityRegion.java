@@ -15,7 +15,6 @@
 
 package com.mc.hibernate.memcached.region;
 
-
 import com.mc.hibernate.memcached.Memcache;
 import com.mc.hibernate.memcached.MemcachedCache;
 import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedEntityRegionAccessStrategy;
@@ -32,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
-
 
 public class MemcachedEntityRegion extends AbstractMemcachedRegion implements EntityRegion {
 
@@ -73,5 +71,4 @@ public class MemcachedEntityRegion extends AbstractMemcachedRegion implements En
     public CacheDataDescription getCacheDataDescription() {
         return metadata;
     }
-
 }

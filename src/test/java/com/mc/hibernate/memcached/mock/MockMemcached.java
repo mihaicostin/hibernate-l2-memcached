@@ -34,7 +34,6 @@ public class MockMemcached implements Memcache {
 
     }
 
-
     public Map<String, Object> getMulti(String... keys) {
         Map<String, Object> result = new HashMap<>();
         for (String key : keys) {

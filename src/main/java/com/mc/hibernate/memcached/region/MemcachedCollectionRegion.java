@@ -44,7 +44,6 @@ public class MemcachedCollectionRegion extends AbstractMemcachedRegion implement
         this.settings = settings;
     }
 
-
     public CollectionRegionAccessStrategy buildAccessStrategy(AccessType accessType) throws CacheException {
 
         switch (accessType) {
@@ -62,7 +61,6 @@ public class MemcachedCollectionRegion extends AbstractMemcachedRegion implement
             default:
                 throw new IllegalArgumentException("unrecognized access strategy type [" + accessType + "]");
         }
-
     }
 
     public boolean isTransactionAware() {

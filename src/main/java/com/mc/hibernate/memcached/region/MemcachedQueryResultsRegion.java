@@ -19,12 +19,8 @@ import com.mc.hibernate.memcached.MemcachedCache;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.QueryResultsRegion;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MemcachedQueryResultsRegion extends AbstractMemcachedRegion implements QueryResultsRegion {
-
-    private final Logger log = LoggerFactory.getLogger(MemcachedQueryResultsRegion.class);
 
     public MemcachedQueryResultsRegion(MemcachedCache cache) {
         super(cache);
@@ -47,5 +43,4 @@ public class MemcachedQueryResultsRegion extends AbstractMemcachedRegion impleme
     public void evictAll() throws CacheException {
         cache.clear();
     }
-
 }

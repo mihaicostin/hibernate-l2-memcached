@@ -34,6 +34,16 @@ To install it, you just need to add the following Maven dependency (check Versio
 
 If memcached authentication is required, it can be specified using "hibernate.memcached.username" and "hibernate.memcached.password"
 
+```xml
+<property name="hibernate.memcached.username">memcached-username</property>
+<property name="hibernate.memcached.password">memcached-password</property>
+```
+
+If memcached are running on a remote server, e.g. on AWS ElastiCache, you can specify the connection URL:
+
+```xml
+<property name="hibernate.memcached.servers">cache.c3wd5k.cfg.euw1.cache.amazonaws.com:11211</property>
+```
 
 # Versions
 

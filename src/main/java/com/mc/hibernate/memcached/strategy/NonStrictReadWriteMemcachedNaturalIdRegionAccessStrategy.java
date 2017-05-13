@@ -19,12 +19,10 @@ import com.mc.hibernate.memcached.region.MemcachedNaturalIdRegion;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.internal.DefaultCacheKeysFactory;
-import org.hibernate.cache.spi.NaturalIdRegion;
 import org.hibernate.cache.spi.access.NaturalIdRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.persister.entity.EntityPersister;
-
 
 public class NonStrictReadWriteMemcachedNaturalIdRegionAccessStrategy
         extends AbstractMemcachedAccessStrategy<MemcachedNaturalIdRegion>

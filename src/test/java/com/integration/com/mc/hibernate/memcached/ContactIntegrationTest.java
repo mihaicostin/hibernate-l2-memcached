@@ -10,8 +10,8 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.Properties;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.hibernate.criterion.Restrictions.eq;
 
 public class ContactIntegrationTest extends AbstractHibernateTestCase {

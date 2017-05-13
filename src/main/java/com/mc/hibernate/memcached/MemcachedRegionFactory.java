@@ -20,7 +20,6 @@ import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.*;
 import org.hibernate.cache.spi.access.AccessType;
-import org.hibernate.cfg.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +27,6 @@ import java.lang.reflect.Constructor;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 
 public class MemcachedRegionFactory implements RegionFactory {
 
@@ -59,8 +57,6 @@ public class MemcachedRegionFactory implements RegionFactory {
             throw new CacheException("Unable to initialize MemcachedClient", e);
         }
     }
-
-
 
     public void stop() {
         if (client != null) {

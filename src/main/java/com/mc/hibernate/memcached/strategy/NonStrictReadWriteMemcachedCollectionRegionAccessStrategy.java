@@ -19,7 +19,6 @@ import com.mc.hibernate.memcached.region.MemcachedCollectionRegion;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.internal.DefaultCacheKeysFactory;
-import org.hibernate.cache.spi.CollectionRegion;
 import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -77,5 +76,4 @@ public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
     public Object getCacheKeyId(Object cacheKey) {
         return DefaultCacheKeysFactory.INSTANCE.getCollectionId(cacheKey);
     }
-
 }

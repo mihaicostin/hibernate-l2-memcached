@@ -19,7 +19,6 @@ import com.mc.hibernate.memcached.MemcachedCache;
 import com.mc.hibernate.memcached.region.AbstractMemcachedRegion;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.CollectionRegion;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
