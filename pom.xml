@@ -4,7 +4,7 @@
 
     <groupId>com.github.mihaicostin</groupId>
     <artifactId>hibernate-l2-memcached</artifactId>
-    <version>5.2.7.0</version>
+    <version>5.2.7.1</version>
     <name>hibernate-l2-memcached</name>
     <description>A library for using Memcached as a second level distributed cache in Hibernate.</description>
     <url>https://github.com/mihaicostin/hibernate-l2-memcached</url>
