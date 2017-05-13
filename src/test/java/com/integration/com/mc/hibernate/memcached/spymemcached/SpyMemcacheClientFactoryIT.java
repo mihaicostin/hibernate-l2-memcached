@@ -5,7 +5,6 @@ import com.mc.hibernate.memcached.PropertiesHelper;
 import com.mc.hibernate.memcached.spymemcached.SpyMemcache;
 import com.mc.hibernate.memcached.spymemcached.SpyMemcacheClientFactory;
 import net.spy.memcached.DefaultHashAlgorithm;
-import net.spy.memcached.MemcachedClient;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import java.util.Properties;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class SpyMemcacheClientFactoryIT {

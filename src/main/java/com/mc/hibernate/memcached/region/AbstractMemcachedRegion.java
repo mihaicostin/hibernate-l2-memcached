@@ -69,6 +69,4 @@ public abstract class AbstractMemcachedRegion implements Region {
     public MemcachedCache getCache() {
         return cache;
     }
-
-
 }

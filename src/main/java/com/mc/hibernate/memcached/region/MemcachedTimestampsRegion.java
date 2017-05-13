@@ -19,12 +19,8 @@ import com.mc.hibernate.memcached.MemcachedCache;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.TimestampsRegion;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MemcachedTimestampsRegion extends AbstractMemcachedRegion implements TimestampsRegion {
-
-    private final Logger log = LoggerFactory.getLogger(MemcachedTimestampsRegion.class);
 
     public MemcachedTimestampsRegion(MemcachedCache cache) {
         super(cache);

@@ -4,6 +4,13 @@
 *.iws
 *.iml
 
+#Eclipse files
+
+.classpath
+.project
+.settings
+bin
+
 #output files
 target
 
