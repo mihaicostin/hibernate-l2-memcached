@@ -10,20 +10,24 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.hibernate.criterion.Restrictions.eq;
+import static org.junit.Assert.*;
 
 public class ContactIntegrationTest extends AbstractHibernateTestCase {
 
     private Contact contact;
     private Calendar birthday;
 
+    private SessionFactory sessionFactory;
+
     @Before
     public void setUp() {
         Properties props = new Properties();
+
         props.setProperty("hibernate.cache.use_query_cache", "true");
-        SessionFactory sessionFactory = getConfiguration(props).buildSessionFactory();
+        props.setProperty("hibernate.memcached.clearSupported", "true");
+
+        sessionFactory = getConfiguration(props).buildSessionFactory();
         session = sessionFactory.openSession();
         transaction = session.beginTransaction();
         setupInTransaction();
