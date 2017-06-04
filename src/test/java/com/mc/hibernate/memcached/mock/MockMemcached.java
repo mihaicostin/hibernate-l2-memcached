@@ -22,18 +22,17 @@ public class MockMemcached implements Memcache {
     }
 
     public void incr(String key, int factor, int startingValue) {
-        Integer counter = (Integer) cache.get(key);
+        String counter = (String) cache.get(key);
         if (counter != null) {
-            cache.put(key, counter + 1);
+            cache.put(key, Long.parseLong(counter) + 1);
         } else {
-            cache.put(key, null);
+            cache.put(key, String.valueOf(startingValue));
         }
     }
 
     public void shutdown() {
 
     }
-
 
     public Map<String, Object> getMulti(String... keys) {
         Map<String, Object> result = new HashMap<>();
@@ -42,4 +41,5 @@ public class MockMemcached implements Memcache {
         }
         return result;
     }
+
 }
