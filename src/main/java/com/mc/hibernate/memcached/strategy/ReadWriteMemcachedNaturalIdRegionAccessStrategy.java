@@ -41,7 +41,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
             Lockable item = (Lockable) region.getCache().get(key);
 
             if (item == null) {
-                region.getCache().put(key, new Item(value, null, region.getCache().nextTimestamp()));
+                region.getCache().put(key, new Item(value, null, region.nextTimestamp()));
                 return true;
             } else {
                 return false;
