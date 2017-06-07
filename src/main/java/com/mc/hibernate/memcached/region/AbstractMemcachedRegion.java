@@ -15,12 +15,12 @@
 
 package com.mc.hibernate.memcached.region;
 
-import java.util.Map;
-
+import com.mc.hibernate.memcached.MemcachedCache;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.Region;
 
-import com.mc.hibernate.memcached.MemcachedCache;
+import java.util.Collections;
+import java.util.Map;
 
 public abstract class AbstractMemcachedRegion implements Region {
 
@@ -55,15 +55,25 @@ public abstract class AbstractMemcachedRegion implements Region {
     }
 
     public Map toMap() {
-        return null;
+        return Collections.emptyMap();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return timestamp in ms
+     */
     public long nextTimestamp() {
-        return System.currentTimeMillis() / 100;
+        return System.currentTimeMillis();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return timeout in ms
+     */
     public int getTimeout() {
-        return cache.getTimeout();
+        return cache.getTimeoutSeconds() * 1000;
     }
 
     public MemcachedCache getCache() {

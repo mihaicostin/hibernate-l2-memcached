@@ -73,8 +73,13 @@ public class MemcachedRegionFactory implements RegionFactory {
         return AccessType.READ_WRITE;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return timestamp in ms
+     */
     public long nextTimestamp() {
-        return System.currentTimeMillis() / 100;
+        return System.currentTimeMillis();
     }
 
     public EntityRegion buildEntityRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {

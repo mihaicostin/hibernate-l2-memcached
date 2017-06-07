@@ -217,7 +217,7 @@ public class MemcachedCache {
     public void unlock(Object key) throws CacheException {
     }
 
-    public int getTimeout() {
+    public int getTimeoutSeconds() {
         return cacheTimeSeconds;
     }
 
