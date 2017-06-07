@@ -22,12 +22,14 @@ import org.slf4j.LoggerFactory;
 
 import com.mc.hibernate.memcached.MemcachedCache;
 
+import java.util.Properties;
+
 public class MemcachedTimestampsRegion extends AbstractMemcachedRegion implements TimestampsRegion {
 
     private final Logger log = LoggerFactory.getLogger(MemcachedTimestampsRegion.class);
 
-    public MemcachedTimestampsRegion(MemcachedCache cache) {
-        super(cache);
+    public MemcachedTimestampsRegion(MemcachedCache cache, Properties properties) {
+        super(cache, properties);
     }
 
     public Object get(Object key) throws CacheException {

@@ -40,7 +40,7 @@ public class MemcachedCollectionRegion extends AbstractMemcachedRegion implement
     private final Settings settings;
 
     public MemcachedCollectionRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Properties properties, Memcache client) {
-        super(cache);
+        super(cache, properties);
         this.metadata = metadata;
         this.settings = settings;
     }

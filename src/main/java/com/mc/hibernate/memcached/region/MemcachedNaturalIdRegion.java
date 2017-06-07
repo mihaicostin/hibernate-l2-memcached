@@ -41,7 +41,7 @@ public class MemcachedNaturalIdRegion extends AbstractMemcachedRegion implements
     private final Settings settings;
 
     public MemcachedNaturalIdRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Properties properties, Memcache client) {
-        super(cache);
+        super(cache, properties);
         this.metadata = metadata;
         this.settings = settings;
     }

@@ -83,8 +83,7 @@ public class MemcachedRegionFactory implements RegionFactory {
     }
 
     public EntityRegion buildEntityRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
-        return new MemcachedEntityRegion(getCache(regionName), settings,
-                metadata, properties, client);
+        return new MemcachedEntityRegion(getCache(regionName), settings, metadata, properties, client);
     }
 
     public NaturalIdRegion buildNaturalIdRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
@@ -96,11 +95,11 @@ public class MemcachedRegionFactory implements RegionFactory {
     }
 
     public QueryResultsRegion buildQueryResultsRegion(String regionName, Properties properties) throws CacheException {
-        return new MemcachedQueryResultsRegion(getCache(regionName));
+        return new MemcachedQueryResultsRegion(getCache(regionName), properties);
     }
 
     public TimestampsRegion buildTimestampsRegion(String regionName, Properties properties) throws CacheException {
-        return new MemcachedTimestampsRegion(getCache(regionName));
+        return new MemcachedTimestampsRegion(getCache(regionName), properties);
     }
 
     protected MemcacheClientFactory getMemcachedClientFactory(Config config) {

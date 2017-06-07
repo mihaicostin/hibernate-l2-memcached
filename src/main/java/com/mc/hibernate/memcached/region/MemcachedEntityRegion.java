@@ -43,7 +43,7 @@ public class MemcachedEntityRegion extends AbstractMemcachedRegion implements En
     private final Settings settings;
 
     public MemcachedEntityRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Properties properties, Memcache client) {
-        super(cache);
+        super(cache, properties);
         this.metadata = metadata;
         this.settings = settings;
     }
