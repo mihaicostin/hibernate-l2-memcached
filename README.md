@@ -95,7 +95,7 @@ Use the version compatible with your hibernate version (ex: Version 5.2.1.x is d
 
 ## Hibernate 4.3.x.Final
 * v 4.3.11.0
-    - Fix for #9 (configure the cache with all available properties)
+    - Fix for [Issue #9](https://github.com/mihaicostin/hibernate-l2-memcached/issues/9) (configure the cache with all available properties)
 * v 1.1.0
     - Memcached client now respects the region timeout property [Issue #1](https://github.com/mihaicostin/hibernate-l2-memcached/issues/1)
       ```xml
