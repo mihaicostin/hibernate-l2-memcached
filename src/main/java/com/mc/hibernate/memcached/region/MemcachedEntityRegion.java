@@ -16,8 +16,13 @@
 package com.mc.hibernate.memcached.region;
 
 
-import java.util.Properties;
-
+import com.mc.hibernate.memcached.Config;
+import com.mc.hibernate.memcached.Memcache;
+import com.mc.hibernate.memcached.MemcachedCache;
+import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedEntityRegionAccessStrategy;
+import com.mc.hibernate.memcached.strategy.ReadOnlyMemcachedEntityRegionAccessStrategy;
+import com.mc.hibernate.memcached.strategy.ReadWriteMemcachedEntityRegionAccessStrategy;
+import com.mc.hibernate.memcached.strategy.TransactionalMemcachedEntityRegionAccessStrategy;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;
 import org.hibernate.cache.spi.EntityRegion;
@@ -27,13 +32,6 @@ import org.hibernate.cfg.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mc.hibernate.memcached.Memcache;
-import com.mc.hibernate.memcached.MemcachedCache;
-import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedEntityRegionAccessStrategy;
-import com.mc.hibernate.memcached.strategy.ReadOnlyMemcachedEntityRegionAccessStrategy;
-import com.mc.hibernate.memcached.strategy.ReadWriteMemcachedEntityRegionAccessStrategy;
-import com.mc.hibernate.memcached.strategy.TransactionalMemcachedEntityRegionAccessStrategy;
-
 
 public class MemcachedEntityRegion extends AbstractMemcachedRegion implements EntityRegion {
 
@@ -42,7 +40,7 @@ public class MemcachedEntityRegion extends AbstractMemcachedRegion implements En
     private final CacheDataDescription metadata;
     private final Settings settings;
 
-    public MemcachedEntityRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Properties properties, Memcache client) {
+    public MemcachedEntityRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Config properties, Memcache client) {
         super(cache, properties);
         this.metadata = metadata;
         this.settings = settings;

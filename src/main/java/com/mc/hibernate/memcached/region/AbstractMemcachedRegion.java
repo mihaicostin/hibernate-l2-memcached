@@ -15,25 +15,23 @@
 
 package com.mc.hibernate.memcached.region;
 
+import com.mc.hibernate.memcached.Config;
 import com.mc.hibernate.memcached.MemcachedCache;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.Region;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Properties;
 
 public abstract class AbstractMemcachedRegion implements Region {
 
-    private static final int DEFAULT_CACHE_LOCK_TIMEOUT = 60000;
     private final int lockTimeout;
 
     protected MemcachedCache cache;
 
-    AbstractMemcachedRegion(MemcachedCache cache, Properties properties) {
+    AbstractMemcachedRegion(MemcachedCache cache, Config config) {
         this.cache = cache;
-        String property = properties.getProperty("hibernate.memcached.cacheLockTimeout", String.valueOf(DEFAULT_CACHE_LOCK_TIMEOUT));
-        this.lockTimeout = Integer.decode(property);
+        this.lockTimeout = config.getCacheLockTimeout(cache.getRegionName());
     }
 
     public String getName() {

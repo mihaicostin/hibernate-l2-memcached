@@ -15,20 +15,18 @@
 
 package com.mc.hibernate.memcached.region;
 
+import com.mc.hibernate.memcached.Config;
+import com.mc.hibernate.memcached.MemcachedCache;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.QueryResultsRegion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mc.hibernate.memcached.MemcachedCache;
-
-import java.util.Properties;
-
 public class MemcachedQueryResultsRegion extends AbstractMemcachedRegion implements QueryResultsRegion {
 
     private final Logger log = LoggerFactory.getLogger(MemcachedQueryResultsRegion.class);
 
-    public MemcachedQueryResultsRegion(MemcachedCache cache, Properties properties) {
+    public MemcachedQueryResultsRegion(MemcachedCache cache, Config properties) {
         super(cache, properties);
     }
 

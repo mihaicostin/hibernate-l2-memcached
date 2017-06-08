@@ -27,13 +27,15 @@ public class Config {
     public static final String PROP_PREFIX = "hibernate.memcached.";
 
     private static final String CACHE_TIME_SECONDS = "cacheTimeSeconds";
+    private static final String LOCK_TIMEOUT_MS = "cacheLockTimeout";
     private static final String CLEAR_SUPPORTED = "clearSupported";
     private static final String MEMCACHE_CLIENT_FACTORY = "memcacheClientFactory";
     private static final String DOGPILE_PREVENTION = "dogpilePrevention";
     private static final String DOGPILE_PREVENTION_EXPIRATION_FACTOR = "dogpilePrevention.expirationFactor";
     private static final String KEY_STRATEGY = "keyStrategy";
 
-    private static final int DEFAULT_CACHE_TIME_SECONDS = 300;
+    private static final int DEFAULT_CACHE_LOCK_TIMEOUT_MS = 60000; //ms
+    private static final int DEFAULT_CACHE_TIME_SECONDS = 300; //seconds
     private static final boolean DEFAULT_CLEAR_SUPPORTED = false;
     private static final boolean DEFAULT_DOGPILE_PREVENTION = false;
     private static final int DEFAULT_DOGPILE_EXPIRATION_FACTOR = 2;
@@ -94,5 +96,10 @@ public class Config {
 
     public PropertiesHelper getPropertiesHelper() {
         return props;
+    }
+
+    public int getCacheLockTimeout(String cacheRegion) {
+        int globalLockTimeout = props.getInt(PROP_PREFIX + LOCK_TIMEOUT_MS, DEFAULT_CACHE_LOCK_TIMEOUT_MS);
+        return props.getInt(cacheRegionPrefix(cacheRegion) + LOCK_TIMEOUT_MS, globalLockTimeout);
     }
 }

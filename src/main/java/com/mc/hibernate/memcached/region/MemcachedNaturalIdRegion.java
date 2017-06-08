@@ -15,8 +15,13 @@
 
 package com.mc.hibernate.memcached.region;
 
-import java.util.Properties;
-
+import com.mc.hibernate.memcached.Config;
+import com.mc.hibernate.memcached.Memcache;
+import com.mc.hibernate.memcached.MemcachedCache;
+import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedNaturalIdRegionAccessStrategy;
+import com.mc.hibernate.memcached.strategy.ReadOnlyMemcachedNaturalIdRegionAccessStrategy;
+import com.mc.hibernate.memcached.strategy.ReadWriteMemcachedNaturalIdRegionAccessStrategy;
+import com.mc.hibernate.memcached.strategy.TransactionalMemcachedNaturalIdRegionAccessStrategy;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;
 import org.hibernate.cache.spi.NaturalIdRegion;
@@ -26,13 +31,6 @@ import org.hibernate.cfg.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mc.hibernate.memcached.Memcache;
-import com.mc.hibernate.memcached.MemcachedCache;
-import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedNaturalIdRegionAccessStrategy;
-import com.mc.hibernate.memcached.strategy.ReadOnlyMemcachedNaturalIdRegionAccessStrategy;
-import com.mc.hibernate.memcached.strategy.ReadWriteMemcachedNaturalIdRegionAccessStrategy;
-import com.mc.hibernate.memcached.strategy.TransactionalMemcachedNaturalIdRegionAccessStrategy;
-
 public class MemcachedNaturalIdRegion extends AbstractMemcachedRegion implements NaturalIdRegion {
 
     private final Logger log = LoggerFactory.getLogger(MemcachedNaturalIdRegion.class);
@@ -40,7 +38,7 @@ public class MemcachedNaturalIdRegion extends AbstractMemcachedRegion implements
     private final CacheDataDescription metadata;
     private final Settings settings;
 
-    public MemcachedNaturalIdRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Properties properties, Memcache client) {
+    public MemcachedNaturalIdRegion(MemcachedCache cache, Settings settings, CacheDataDescription metadata, Config properties, Memcache client) {
         super(cache, properties);
         this.metadata = metadata;
         this.settings = settings;
