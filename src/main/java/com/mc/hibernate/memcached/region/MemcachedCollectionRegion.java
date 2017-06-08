@@ -15,7 +15,7 @@
 
 package com.mc.hibernate.memcached.region;
 
-import com.mc.hibernate.memcached.Memcache;
+import com.mc.hibernate.memcached.Config;
 import com.mc.hibernate.memcached.MemcachedCache;
 import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedCollectionRegionAccessStrategy;
 import com.mc.hibernate.memcached.strategy.ReadOnlyMemcachedCollectionRegionAccessStrategy;
@@ -30,16 +30,14 @@ import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
-
 public class MemcachedCollectionRegion extends AbstractMemcachedRegion implements CollectionRegion {
 
     private final Logger log = LoggerFactory.getLogger(MemcachedCollectionRegion.class);
     private final CacheDataDescription metadata;
     private final SessionFactoryOptions settings;
 
-    public MemcachedCollectionRegion(MemcachedCache cache, SessionFactoryOptions settings, CacheDataDescription metadata, Properties properties, Memcache client) {
-        super(cache);
+    public MemcachedCollectionRegion(MemcachedCache cache, SessionFactoryOptions settings, CacheDataDescription metadata, Config config) {
+        super(cache, config);
         this.metadata = metadata;
         this.settings = settings;
     }

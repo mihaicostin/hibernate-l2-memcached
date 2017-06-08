@@ -217,14 +217,6 @@ public class MemcachedCache {
     public void unlock(Object key) throws CacheException {
     }
 
-    public long nextTimestamp() {
-        return System.currentTimeMillis() / 100;
-    }
-
-    public int getTimeout() {
-        return cacheTimeSeconds;
-    }
-
     public String getRegionName() {
         return regionName;
     }

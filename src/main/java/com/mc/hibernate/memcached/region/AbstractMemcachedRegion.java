@@ -15,18 +15,22 @@
 
 package com.mc.hibernate.memcached.region;
 
+import com.mc.hibernate.memcached.Config;
 import com.mc.hibernate.memcached.MemcachedCache;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.Region;
 
+import java.util.Collections;
 import java.util.Map;
 
 public abstract class AbstractMemcachedRegion implements Region {
 
+    private final int lockTimeout;
     protected MemcachedCache cache;
 
-    AbstractMemcachedRegion(MemcachedCache cache) {
+    AbstractMemcachedRegion(MemcachedCache cache, Config config) {
         this.cache = cache;
+        this.lockTimeout = config.getCacheLockTimeout(cache.getRegionName());
     }
 
     public String getName() {
@@ -53,17 +57,28 @@ public abstract class AbstractMemcachedRegion implements Region {
         return cache.getElementCountOnDisk();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return emptyMap, since memcached doesn't support this notion.
+     */
     @Override
     public Map toMap() {
-        return cache.toMap();
+        return Collections.emptyMap();
     }
 
+    /**
+     * @return next timestamp in ms
+     */
     public long nextTimestamp() {
-        return System.currentTimeMillis() / 100;
+        return System.currentTimeMillis();
     }
 
+    /**
+     * @return cache lock timeout in ms
+     */
     public int getTimeout() {
-        return cache.getTimeout();
+        return lockTimeout;
     }
 
     public MemcachedCache getCache() {

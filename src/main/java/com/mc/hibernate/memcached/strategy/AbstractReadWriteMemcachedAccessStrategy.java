@@ -85,7 +85,7 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
             final Lockable item = (Lockable) region().get(key);
             final boolean writeable = item == null || item.isWriteable(txTimestamp, version, versionComparator);
             if (writeable) {
-                region().put(key, new Item(value, version, region().nextTimestamp()));
+                region().put(key, new Item(value, version, region.nextTimestamp()));
                 return true;
             } else {
                 return false;
@@ -102,7 +102,7 @@ public abstract class AbstractReadWriteMemcachedAccessStrategy<T extends Abstrac
         region.getCache().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);
-            final long timeout = region().nextTimestamp() + region().getTimeout();
+            final long timeout = region.nextTimestamp() + region.getTimeout();
             final Lock lock = (item == null) ? new Lock(timeout, uuid, nextLockId(), version) : item.lock(
                     timeout,
                     uuid,

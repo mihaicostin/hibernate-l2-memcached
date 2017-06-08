@@ -15,6 +15,7 @@
 
 package com.mc.hibernate.memcached.region;
 
+import com.mc.hibernate.memcached.Config;
 import com.mc.hibernate.memcached.MemcachedCache;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.QueryResultsRegion;
@@ -22,8 +23,8 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 public class MemcachedQueryResultsRegion extends AbstractMemcachedRegion implements QueryResultsRegion {
 
-    public MemcachedQueryResultsRegion(MemcachedCache cache) {
-        super(cache);
+    public MemcachedQueryResultsRegion(MemcachedCache cache, Config config) {
+        super(cache, config);
     }
 
     @Override
