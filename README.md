@@ -71,15 +71,17 @@ In order to specify a property for a specific region add the region name right a
 # Versions
 Use the version compatible with your hibernate version (ex: Version 5.2.1.x is developed for and compatible with hibernate 5.2.1.Final)
 
-## Hibernate 5.2.7.Final - 5.2.10.Final
+## Hibernate 5.2.x
+*  v 5.2.10.0
+    - Add a new cache property `hibernate.memcached.cacheLockTimeout` (defaults to 60.000 ms)
+    - Update to latest spymemcached version
+    - hibernate-core dependency (as provided): 5.2.10.Final
 *  v 5.2.7.1
     - Fix for [Issue #9](https://github.com/mihaicostin/hibernate-l2-memcached/issues/9)      
 *  v 5.2.7.0
     - Support Hibernate 5.2.7.Final ([PR](https://github.com/mihaicostin/hibernate-l2-memcached/pull/6) by @akhalikov )
     - Update spymemcached to [2.12.2](https://github.com/couchbase/spymemcached/releases/tag/2.12.2)
     - Tested with 5.2.7.Final - 5.2.10.Final
-
-## Hibernate 5.2.1.Final
 *  v 5.2.1.0
     - Update [spymemcached](https://github.com/couchbase/spymemcached) to the latest version: 2.12.1
 
