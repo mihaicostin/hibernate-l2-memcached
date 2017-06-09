@@ -85,17 +85,17 @@ Use the version compatible with your hibernate version (ex: Version 5.2.1.x is d
 *  v 5.2.1.0
     - Update [spymemcached](https://github.com/couchbase/spymemcached) to the latest version: 2.12.1
 
-## Hibernate 5.1.1.Final - 5.1.6.Final
+## Hibernate 5.1.x
 * v 5.1.5.1
     - Fix for [Issue #9](https://github.com/mihaicostin/hibernate-l2-memcached/issues/9)
 * v 5.1.5.0
     - Support for Hibernate 5.1.x (tested with 5.1.1.Final - 5.1.5.Final)
 
-## Hibernate 5.0.1.Final
+## Hibernate 5.0.x
 * v 5.0.1.0
     - Support for Hibernate 5.0.x
 
-## Hibernate 4.3.x.Final
+## Hibernate 4.3.x
 * v 4.3.11.0
     - Fix for [Issue #9](https://github.com/mihaicostin/hibernate-l2-memcached/issues/9) (configure the cache with all available properties)
 * v 1.1.0
