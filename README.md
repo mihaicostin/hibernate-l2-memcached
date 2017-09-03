@@ -3,6 +3,11 @@ A library for using Memcached as a second level distributed cache in Hibernate.
   * Uses spymemcached client
   * Supports entity and query caching.
 
+## Jump to
+- [Maven dependency](https://github.com/mihaicostin/hibernate-l2-memcached/#maven-dependency)
+- [Configuration options]()
+- [Versions](https://github.com/mihaicostin/hibernate-l2-memcached#versions)
+
 # Maven dependency
 
 To install it, you just need to add the following Maven dependency (check Versions for the right version for you):
@@ -39,7 +44,7 @@ If memcached are running on a remote server, e.g. on AWS ElastiCache, you can sp
 <property name="hibernate.memcached.servers">cache.c3wd5k.cfg.euw1.cache.amazonaws.com:11211</property>
 ```
 
-# Config options 
+# Configuration options 
 
 ## Targeting the memcached client (net.spy.memcached configurations)
 
