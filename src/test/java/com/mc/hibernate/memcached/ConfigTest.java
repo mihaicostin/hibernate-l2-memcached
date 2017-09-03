@@ -24,6 +24,18 @@ public class ConfigTest extends BaseTest {
     }
 
     @Test
+    public void testCacheLockTimeout() {
+        Properties p = new Properties();
+        p.put("hibernate.memcached.cacheLockTimeout", "5000");
+        p.put("hibernate.memcached.REGION.cacheLockTimeout", "1000");
+
+        Config config = newConfig(p);
+        assertEquals(5000, config.getCacheLockTimeout(null));
+        assertEquals(1000, config.getCacheLockTimeout("REGION"));
+    }
+
+
+    @Test
     public void testClearSupported() {
 
         Properties p = new Properties();

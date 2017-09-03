@@ -20,7 +20,6 @@ import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.*;
 import org.hibernate.cache.spi.access.AccessType;
-import org.hibernate.cfg.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +27,6 @@ import java.lang.reflect.Constructor;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 
 public class MemcachedRegionFactory implements RegionFactory {
 
@@ -54,13 +52,11 @@ public class MemcachedRegionFactory implements RegionFactory {
         this.properties = properties;
         log.info("Starting MemcachedClient...");
         try {
-            client = getMemcachedClientFactory(new Config(new PropertiesHelper(properties))).createMemcacheClient();
+            client = getMemcachedClientFactory(wrapInConfig(properties)).createMemcacheClient();
         } catch (Exception e) {
             throw new CacheException("Unable to initialize MemcachedClient", e);
         }
     }
-
-
 
     public void stop() {
         if (client != null) {
@@ -79,30 +75,30 @@ public class MemcachedRegionFactory implements RegionFactory {
     }
 
     public long nextTimestamp() {
-        return System.currentTimeMillis() / 100;
+        return System.currentTimeMillis();
     }
 
     public EntityRegion buildEntityRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
-        return new MemcachedEntityRegion(getCache(regionName), settings, metadata, properties, client);
+        return new MemcachedEntityRegion(getCache(regionName), settings, metadata, wrapInConfig(properties));
     }
 
     public NaturalIdRegion buildNaturalIdRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
-        return new MemcachedNaturalIdRegion(getCache(regionName), settings, metadata, properties, client);
+        return new MemcachedNaturalIdRegion(getCache(regionName), settings, metadata, wrapInConfig(properties));
     }
 
     public CollectionRegion buildCollectionRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
-        return new MemcachedCollectionRegion(getCache(regionName), settings, metadata, properties, client);
+        return new MemcachedCollectionRegion(getCache(regionName), settings, metadata, wrapInConfig(properties));
     }
 
     public QueryResultsRegion buildQueryResultsRegion(String regionName, Properties properties) throws CacheException {
-        return new MemcachedQueryResultsRegion(getCache(regionName));
+        return new MemcachedQueryResultsRegion(getCache(regionName), wrapInConfig(properties));
     }
 
     public TimestampsRegion buildTimestampsRegion(String regionName, Properties properties) throws CacheException {
-        return new MemcachedTimestampsRegion(getCache(regionName));
+        return new MemcachedTimestampsRegion(getCache(regionName), wrapInConfig(properties));
     }
 
-    protected MemcacheClientFactory getMemcachedClientFactory(Config config) {
+    private MemcacheClientFactory getMemcachedClientFactory(Config config) {
         String factoryClassName = config.getMemcachedClientFactoryName();
 
         Constructor<?> constructor;
@@ -127,4 +123,9 @@ public class MemcachedRegionFactory implements RegionFactory {
     private MemcachedCache getCache(String regionName) {
         return caches.get(regionName) == null ? new MemcachedCache(regionName, client, new Config(new PropertiesHelper(properties))) : caches.get(regionName);
     }
+
+    private Config wrapInConfig(Properties properties) {
+        return new Config(new PropertiesHelper(properties));
+    }
+
 }

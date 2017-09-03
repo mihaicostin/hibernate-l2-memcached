@@ -54,7 +54,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
         try {
             final Lockable item = (Lockable) region().get(key);
             if (item == null) {
-                region().put(key, new Item(value, version, region().nextTimestamp()));
+                region().put(key, new Item(value, version, region.nextTimestamp()));
                 return true;
             } else {
                 return false;
@@ -96,7 +96,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
                     decrementLock(key, lockItem);
                     return false;
                 } else {
-                    region().put(key, new Item(value, currentVersion, region().nextTimestamp()));
+                    region().put(key, new Item(value, currentVersion, region.nextTimestamp()));
                     return true;
                 }
             } else {

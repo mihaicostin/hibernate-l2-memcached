@@ -16,6 +16,7 @@
 package com.mc.hibernate.memcached.region;
 
 
+import com.mc.hibernate.memcached.Config;
 import com.mc.hibernate.memcached.Memcache;
 import com.mc.hibernate.memcached.MemcachedCache;
 import com.mc.hibernate.memcached.strategy.NonStrictReadWriteMemcachedEntityRegionAccessStrategy;
@@ -41,8 +42,8 @@ public class MemcachedEntityRegion extends AbstractMemcachedRegion implements En
     private final CacheDataDescription metadata;
     private final SessionFactoryOptions settings;
 
-    public MemcachedEntityRegion(MemcachedCache cache, SessionFactoryOptions settings, CacheDataDescription metadata, Properties properties, Memcache client) {
-        super(cache);
+    public MemcachedEntityRegion(MemcachedCache cache, SessionFactoryOptions settings, CacheDataDescription metadata, Config config) {
+        super(cache, config);
         this.metadata = metadata;
         this.settings = settings;
     }

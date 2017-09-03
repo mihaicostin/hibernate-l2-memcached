@@ -15,6 +15,7 @@
 
 package com.mc.hibernate.memcached.region;
 
+import com.mc.hibernate.memcached.Config;
 import com.mc.hibernate.memcached.MemcachedCache;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.TimestampsRegion;
@@ -26,8 +27,8 @@ public class MemcachedTimestampsRegion extends AbstractMemcachedRegion implement
 
     private final Logger log = LoggerFactory.getLogger(MemcachedTimestampsRegion.class);
 
-    public MemcachedTimestampsRegion(MemcachedCache cache) {
-        super(cache);
+    public MemcachedTimestampsRegion(MemcachedCache cache, Config config) {
+        super(cache, config);
     }
 
     @Override
