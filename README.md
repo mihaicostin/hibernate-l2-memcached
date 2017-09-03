@@ -5,7 +5,7 @@ A library for using Memcached as a second level distributed cache in Hibernate.
 
 ## Jump to
 - [Maven dependency](https://github.com/mihaicostin/hibernate-l2-memcached/#maven-dependency)
-- [Configuration options]()
+- [Configuration options](https://github.com/mihaicostin/hibernate-l2-memcached/#configuration-options)
 - [Versions](https://github.com/mihaicostin/hibernate-l2-memcached#versions)
 
 # Maven dependency
