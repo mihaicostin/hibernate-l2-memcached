@@ -45,13 +45,13 @@ public class TransactionalMemcachedCollectionRegionAccessStrategy
         if (minimalPutOverride && region.getCache().get(key) != null) {
             return false;
         } else {
-            region.getCache().put(key, value);
+            region().put(key, value);
             return true;
         }
     }
 
     public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
-        return region.getCache().get(key);
+        return region().get(key);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class TransactionalMemcachedCollectionRegionAccessStrategy
 
     @Override
     public void remove(SharedSessionContractImplementor session, Object key) throws CacheException {
-        region.getCache().remove(key);
+        region().remove(key);
     }
 
 

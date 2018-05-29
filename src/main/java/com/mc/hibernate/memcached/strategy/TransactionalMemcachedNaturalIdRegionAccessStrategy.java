@@ -35,12 +35,12 @@ public class TransactionalMemcachedNaturalIdRegionAccessStrategy
 
     @Override
     public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
-        return region.getCache().get(key);
+        return region().get(key);
     }
 
     @Override
     public boolean insert(SharedSessionContractImplementor session, Object key, Object value) throws CacheException {
-        region.getCache().put(key, value);
+        region().put(key, value);
         return true;
     }
 
@@ -55,7 +55,7 @@ public class TransactionalMemcachedNaturalIdRegionAccessStrategy
         if (minimalPutOverride && region.getCache().get(key) != null) {
             return false;
         } else {
-            region.getCache().put(key, value);
+            region().put(key, value);
             return true;
         }
     }
@@ -63,12 +63,12 @@ public class TransactionalMemcachedNaturalIdRegionAccessStrategy
 
     @Override
     public void remove(SharedSessionContractImplementor session, Object key) throws CacheException {
-        region.getCache().remove(key);
+        region().remove(key);
     }
 
     @Override
     public boolean update(SharedSessionContractImplementor session, Object key, Object value) throws CacheException {
-        region.getCache().put(key, value);
+        region().put(key, value);
         return true;
     }
 

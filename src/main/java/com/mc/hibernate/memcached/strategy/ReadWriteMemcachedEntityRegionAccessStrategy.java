@@ -50,7 +50,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
      */
     @Override
     public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value, Object version) throws CacheException {
-        region.getCache().lock(key);
+        region().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);
             if (item == null) {
@@ -60,7 +60,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
                 return false;
             }
         } finally {
-            region.getCache().unlock(key);
+            region().unlock(key);
         }
     }
 
@@ -86,7 +86,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
     public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, Object currentVersion, Object previousVersion, SoftLock lock)
             throws CacheException {
         //what should we do with previousVersion here?
-        region.getCache().lock(key);
+        region().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);
 
@@ -104,7 +104,7 @@ public class ReadWriteMemcachedEntityRegionAccessStrategy
                 return false;
             }
         } finally {
-            region.getCache().unlock(key);
+            region().unlock(key);
         }
     }
 

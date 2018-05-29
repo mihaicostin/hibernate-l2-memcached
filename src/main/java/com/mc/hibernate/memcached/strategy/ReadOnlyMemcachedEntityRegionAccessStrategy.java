@@ -44,7 +44,7 @@ public class ReadOnlyMemcachedEntityRegionAccessStrategy
         if (minimalPutOverride && region.getCache().get(key) != null) {
             return false;
         } else {
-            region.getCache().put(key, value);
+            region().put(key, value);
             return true;
         }
     }

@@ -51,7 +51,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
      */
     @Override
     public boolean afterInsert(SharedSessionContractImplementor session, Object key, Object value) throws CacheException {
-        region.getCache().lock(key);
+        region().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);
             if (item == null) {
@@ -61,7 +61,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
                 return false;
             }
         } finally {
-            region.getCache().unlock(key);
+            region().unlock(key);
         }
     }
 
@@ -85,7 +85,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
     @Override
     public boolean afterUpdate(SharedSessionContractImplementor session, Object key, Object value, SoftLock lock) throws CacheException {
         //what should we do with previousVersion here?
-        region.getCache().lock(key);
+        region().lock(key);
         try {
             final Lockable item = (Lockable) region().get(key);
 
@@ -103,7 +103,7 @@ public class ReadWriteMemcachedNaturalIdRegionAccessStrategy
                 return false;
             }
         } finally {
-            region.getCache().unlock(key);
+            region().unlock(key);
         }
     }
 

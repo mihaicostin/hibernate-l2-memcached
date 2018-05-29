@@ -35,7 +35,7 @@ public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
 
     @Override
     public Object get(SharedSessionContractImplementor session, Object key, long txTimestamp) throws CacheException {
-        return null;
+        return region().get(key);
     }
 
     @Override
@@ -48,11 +48,14 @@ public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
         if (minimalPutOverride && region.getCache().get(key) != null) {
             return false;
         } else {
-            region.getCache().put(key, value);
+            region().put(key, value);
             return true;
         }
     }
 
+    /**
+     * locking is not used for a non-strict read/write strategy
+     */
     @Override
     public SoftLock lockItem(SharedSessionContractImplementor session, Object key, Object version) throws CacheException {
         return null;
@@ -64,7 +67,7 @@ public class NonStrictReadWriteMemcachedCollectionRegionAccessStrategy
     }
 
     public Object get(Object key, long txTimestamp) throws CacheException {
-        return region.getCache().get(key);
+        return region().get(key);
     }
 
     @Override
