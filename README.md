@@ -15,7 +15,7 @@ To install it, you just need to add the following Maven dependency (check Versio
 <dependency>
     <groupId>com.github.mihaicostin</groupId>
     <artifactId>hibernate-l2-memcached</artifactId>
-    <version>5.2.7.0</version>
+    <version>5.2.17.0</version>
 </dependency>
 ```
 
@@ -77,6 +77,9 @@ In order to specify a property for a specific region add the region name right a
 Use the version compatible with your hibernate version (ex: Version 5.2.1.x is developed for and compatible with hibernate 5.2.1.Final)
 
 ## Hibernate 5.2.x
+*  v 5.2.17.0
+    - Fix for [Issue #16](https://github.com/mihaicostin/hibernate-l2-memcached/issues/16)
+    - hibernate-core dependency (as provided): 5.2.17.Final
 *  v 5.2.10.0
     - Add a new cache property `hibernate.memcached.cacheLockTimeout` (defaults to 60.000 ms)
     - Update to latest spymemcached version
