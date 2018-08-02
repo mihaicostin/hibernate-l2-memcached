@@ -3,6 +3,10 @@ A library for using Memcached as a second level distributed cache in Hibernate.
   * Uses spymemcached client
   * Supports entity and query caching.
 
+### CircleCI Status
+[![CircleCI](https://circleci.com/gh/mihaicostin/hibernate-l2-memcached/tree/master.svg?style=svg)](https://circleci.com/gh/mihaicostin/hibernate-l2-memcached/tree/master)
+
+
 ## Jump to
 - [Maven dependency](https://github.com/mihaicostin/hibernate-l2-memcached/#maven-dependency)
 - [Configuration options](https://github.com/mihaicostin/hibernate-l2-memcached/#configuration-options)
