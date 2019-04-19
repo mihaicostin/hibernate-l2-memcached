@@ -15,18 +15,18 @@
 
 package com.mc.hibernate.memcached;
 
-import java.util.Properties;
+import java.util.Map;
 
 public class PropertiesHelper {
 
-    private Properties properties;
+    private Map properties;
 
-    public PropertiesHelper(Properties properties) {
+    public PropertiesHelper(Map properties) {
         this.properties = properties;
     }
 
     public String get(String key) {
-        return properties.getProperty(key);
+        return (String) properties.get(key);
     }
 
     public String get(String key, String defaultVal) {

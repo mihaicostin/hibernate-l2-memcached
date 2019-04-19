@@ -15,21 +15,16 @@
 
 package com.mc.hibernate.memcached.spymemcached;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mc.hibernate.memcached.LoggingMemcacheExceptionHandler;
 import com.mc.hibernate.memcached.Memcache;
 import com.mc.hibernate.memcached.MemcacheExceptionHandler;
 import com.mc.hibernate.memcached.utils.StringUtils;
-
 import net.spy.memcached.MemcachedClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * @author Ray Krueger
- */
+import java.util.Map;
+
 public class SpyMemcache implements Memcache {
 
     private static final Logger log = LoggerFactory.getLogger(SpyMemcache.class);

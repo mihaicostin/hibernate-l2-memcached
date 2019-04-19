@@ -80,6 +80,15 @@ In order to specify a property for a specific region add the region name right a
 # Versions
 Use the version compatible with your hibernate version (ex: Version 5.2.1.x is developed for and compatible with hibernate 5.2.1.Final)
 
+## Hibernate 5.4.x
+* v 5.4.2.0 
+    - Fix for [Issue #17](https://github.com/mihaicostin/hibernate-l2-memcached/issues/17)
+    - tested with hibernate versions 5.3.3.Final - 5.4.2.Final
+
+## Hibernate 5.3.x
+* no support for hibernate 5.3.0 - 5.3.2
+* for hibernate 5.3.3 - 5.3.9 use `v 5.4.2.0`
+
 ## Hibernate 5.2.x
 *  v 5.2.17.0
     - Fix for [Issue #16](https://github.com/mihaicostin/hibernate-l2-memcached/issues/16)

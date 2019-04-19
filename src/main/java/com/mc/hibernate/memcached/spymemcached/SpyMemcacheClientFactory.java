@@ -19,16 +19,10 @@ import com.mc.hibernate.memcached.Config;
 import com.mc.hibernate.memcached.Memcache;
 import com.mc.hibernate.memcached.MemcacheClientFactory;
 import com.mc.hibernate.memcached.PropertiesHelper;
-
 import net.spy.memcached.*;
 import net.spy.memcached.auth.AuthDescriptor;
 import net.spy.memcached.auth.PlainCallbackHandler;
 
-/**
- * Parses hibernate properties to produce a MemcachedClient.
- *
- * @author Ray Krueger
- */
 public class SpyMemcacheClientFactory implements MemcacheClientFactory {
 
     public static final String PROP_SERVERS = Config.PROP_PREFIX + "servers";

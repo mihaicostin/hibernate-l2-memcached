@@ -15,117 +15,184 @@
 
 package com.mc.hibernate.memcached;
 
-import com.mc.hibernate.memcached.region.*;
+import com.mc.hibernate.memcached.cache.CacheManager;
+import com.mc.hibernate.memcached.cache.ConfigSettings;
+import com.mc.hibernate.memcached.cache.MissingCacheStrategy;
+import com.mc.hibernate.memcached.cache.StorageAccessImpl;
+import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.*;
-import org.hibernate.cache.spi.access.AccessType;
+import org.hibernate.cache.cfg.spi.DomainDataRegionBuildingContext;
+import org.hibernate.cache.cfg.spi.DomainDataRegionConfig;
+import org.hibernate.cache.internal.DefaultCacheKeysFactory;
+import org.hibernate.cache.spi.CacheKeysFactory;
+import org.hibernate.cache.spi.DomainDataRegion;
+import org.hibernate.cache.spi.SecondLevelCacheLogger;
+import org.hibernate.cache.spi.support.*;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.List;
+import java.util.Map;
 
-public class MemcachedRegionFactory implements RegionFactory {
+public class MemcachedRegionFactory extends RegionFactoryTemplate {
 
-    private final Logger log = LoggerFactory.getLogger(MemcachedRegionFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(MemcachedRegionFactory.class);
 
-    private final ConcurrentMap<String, MemcachedCache> caches = new ConcurrentHashMap<String, MemcachedCache>();
+    private final CacheKeysFactory cacheKeysFactory;
 
-    private Properties properties;
-    private Memcache client;
-    private SessionFactoryOptions settings;
-
-    public MemcachedRegionFactory(Properties properties) {
-        this.properties = properties;
-    }
+    private volatile CacheManager cacheManager;
+    private volatile MissingCacheStrategy missingCacheStrategy;
 
     public MemcachedRegionFactory() {
+        this(DefaultCacheKeysFactory.INSTANCE);
+    }
+
+    public MemcachedRegionFactory(CacheKeysFactory cacheKeysFactory) {
+        this.cacheKeysFactory = cacheKeysFactory;
     }
 
     @Override
-    public void start(SessionFactoryOptions settings, Properties properties) throws CacheException {
+    protected CacheKeysFactory getImplicitCacheKeysFactory() {
+        return cacheKeysFactory;
+    }
 
-        this.settings = settings;
-        this.properties = properties;
-        log.info("Starting MemcachedClient...");
+    @Override
+    public DomainDataRegion buildDomainDataRegion(DomainDataRegionConfig regionConfig, DomainDataRegionBuildingContext buildingContext) {
+        return new DomainDataRegionImpl(regionConfig, this, createDomainDataStorageAccess(regionConfig, buildingContext), cacheKeysFactory, buildingContext);
+    }
+
+    @Override
+    protected DomainDataStorageAccess createDomainDataStorageAccess(DomainDataRegionConfig regionConfig, DomainDataRegionBuildingContext buildingContext) {
+        return new StorageAccessImpl(getOrCreateCache(regionConfig.getRegionName(), buildingContext.getSessionFactory()));
+    }
+
+    @Override
+    protected StorageAccess createQueryResultsRegionStorageAccess(String regionName, SessionFactoryImplementor sessionFactory) {
+        String defaultedRegionName = defaultRegionName(regionName, sessionFactory, DEFAULT_QUERY_RESULTS_REGION_UNQUALIFIED_NAME, LEGACY_QUERY_RESULTS_REGION_UNQUALIFIED_NAMES);
+        return new StorageAccessImpl(getOrCreateCache(defaultedRegionName, sessionFactory));
+    }
+
+    @Override
+    protected StorageAccess createTimestampsRegionStorageAccess(String regionName, SessionFactoryImplementor sessionFactory) {
+        String defaultedRegionName = defaultRegionName(regionName, sessionFactory, DEFAULT_UPDATE_TIMESTAMPS_REGION_UNQUALIFIED_NAME, LEGACY_UPDATE_TIMESTAMPS_REGION_UNQUALIFIED_NAMES);
+        return new StorageAccessImpl(getOrCreateCache(defaultedRegionName, sessionFactory));
+    }
+
+    protected final String defaultRegionName(String regionName, SessionFactoryImplementor sessionFactory,
+                                             String defaultRegionName, List<String> legacyDefaultRegionNames) {
+        if (defaultRegionName.equals(regionName) && !cacheExists(regionName, sessionFactory)) {
+            // Maybe the user configured caches explicitly with legacy names; try them and use the first that exists
+            for (String legacyDefaultRegionName : legacyDefaultRegionNames) {
+                if (cacheExists(legacyDefaultRegionName, sessionFactory)) {
+                    SecondLevelCacheLogger.INSTANCE.usingLegacyCacheName(defaultRegionName, legacyDefaultRegionName);
+                    return legacyDefaultRegionName;
+                }
+            }
+        }
+
+        return regionName;
+    }
+
+    protected MemcachedCache getOrCreateCache(String unqualifiedRegionName, SessionFactoryImplementor sessionFactory) {
+
+        verifyStarted();
+        assert !RegionNameQualifier.INSTANCE.isQualified(unqualifiedRegionName, sessionFactory.getSessionFactoryOptions());
+
+        final String qualifiedRegionName = RegionNameQualifier.INSTANCE.qualify(
+                unqualifiedRegionName,
+                sessionFactory.getSessionFactoryOptions()
+        );
+
+        final MemcachedCache cache = cacheManager.getCache(qualifiedRegionName);
+        if (cache == null) {
+            return createCache(qualifiedRegionName);
+        }
+        return cache;
+    }
+
+    protected MemcachedCache createCache(String regionName) {
+        switch (missingCacheStrategy) {
+            case CREATE_WARN:
+                log.warn("Creating new cache region " + regionName);
+                cacheManager.addCache(regionName);
+                return cacheManager.getCache(regionName);
+            case CREATE:
+                cacheManager.addCache(regionName);
+                return cacheManager.getCache(regionName);
+            case FAIL:
+                throw new CacheException("On-the-fly creation of Cache objects is not supported [" + regionName + "]");
+            default:
+                throw new IllegalStateException("Unsupported missing cache strategy: " + missingCacheStrategy);
+        }
+    }
+
+    protected boolean cacheExists(String unqualifiedRegionName, SessionFactoryImplementor sessionFactory) {
+        final String qualifiedRegionName = RegionNameQualifier.INSTANCE.qualify(
+                unqualifiedRegionName,
+                sessionFactory.getSessionFactoryOptions()
+        );
+        return cacheManager.getCache(qualifiedRegionName) != null;
+    }
+
+
+    protected boolean isStarted() {
+        return super.isStarted() && cacheManager != null;
+    }
+
+    @Override
+    protected void prepareForUse(SessionFactoryOptions settings, Map configValues) {
+        synchronized (this) {
+            this.cacheManager = resolveCacheManager(settings, configValues);
+            if (this.cacheManager == null) {
+                throw new CacheException("Could not start CacheManager");
+            }
+            this.missingCacheStrategy = MissingCacheStrategy.interpretSetting(configValues.get(ConfigSettings.MISSING_CACHE_STRATEGY));
+        }
+    }
+
+    protected CacheManager resolveCacheManager(SessionFactoryOptions settings, Map properties) {
+        final Object explicitCacheManager = properties.get(ConfigSettings.CACHE_MANAGER);
+        if (explicitCacheManager != null) {
+            return useExplicitCacheManager(settings, explicitCacheManager);
+        }
+
+        return useNormalCacheManager(settings, properties);
+    }
+
+    /**
+     * Locate the CacheManager during start-up.  protected to allow for subclassing
+     */
+    protected static CacheManager useNormalCacheManager(SessionFactoryOptions settings, Map properties) {
+        return new CacheManager(settings, properties);
+    }
+
+    private CacheManager useExplicitCacheManager(SessionFactoryOptions settings, Object setting) {
+        if (setting instanceof CacheManager) {
+            return (CacheManager) setting;
+        }
+
+        final Class<? extends CacheManager> cacheManagerClass;
+        if (setting instanceof Class) {
+            cacheManagerClass = (Class<? extends CacheManager>) setting;
+        } else {
+            cacheManagerClass = settings.getServiceRegistry().getService(ClassLoaderService.class).classForName(setting.toString());
+        }
+
         try {
-            client = getMemcachedClientFactory(wrapInConfig(properties)).createMemcacheClient();
-        } catch (Exception e) {
-            throw new CacheException("Unable to initialize MemcachedClient", e);
+            return cacheManagerClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new CacheException("Could not use explicit CacheManager : " + setting);
         }
     }
 
-    public void stop() {
-        if (client != null) {
-            log.debug("Shutting down Memcache client");
-            client.shutdown();
-        }
-        client = null;
-    }
-
-    public boolean isMinimalPutsEnabledByDefault() {
-        return true;
-    }
-
-    public AccessType getDefaultAccessType() {
-        return AccessType.READ_WRITE;
-    }
-
-    public long nextTimestamp() {
-        return System.currentTimeMillis();
-    }
-
-    public EntityRegion buildEntityRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
-        return new MemcachedEntityRegion(getCache(regionName), settings, metadata, wrapInConfig(properties));
-    }
-
-    public NaturalIdRegion buildNaturalIdRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
-        return new MemcachedNaturalIdRegion(getCache(regionName), settings, metadata, wrapInConfig(properties));
-    }
-
-    public CollectionRegion buildCollectionRegion(String regionName, Properties properties, CacheDataDescription metadata) throws CacheException {
-        return new MemcachedCollectionRegion(getCache(regionName), settings, metadata, wrapInConfig(properties));
-    }
-
-    public QueryResultsRegion buildQueryResultsRegion(String regionName, Properties properties) throws CacheException {
-        return new MemcachedQueryResultsRegion(getCache(regionName), wrapInConfig(properties));
-    }
-
-    public TimestampsRegion buildTimestampsRegion(String regionName, Properties properties) throws CacheException {
-        return new MemcachedTimestampsRegion(getCache(regionName), wrapInConfig(properties));
-    }
-
-    private MemcacheClientFactory getMemcachedClientFactory(Config config) {
-        String factoryClassName = config.getMemcachedClientFactoryName();
-
-        Constructor<?> constructor;
+    @Override
+    protected void releaseFromUse() {
         try {
-            constructor = Class.forName(factoryClassName).getConstructor(PropertiesHelper.class);
-        } catch (ClassNotFoundException e) {
-            throw new CacheException("Unable to find factory class [" + factoryClassName + "]", e);
-        } catch (NoSuchMethodException e) {
-            throw new CacheException("Unable to find PropertiesHelper constructor for factory class [" + factoryClassName + "]", e);
+            cacheManager.releaseFromUse();
+        } finally {
+            cacheManager = null;
         }
-
-        MemcacheClientFactory clientFactory;
-        try {
-            clientFactory = (MemcacheClientFactory) constructor.newInstance(config.getPropertiesHelper());
-        } catch (Exception e) {
-            throw new CacheException("Unable to instantiate factory class [" + factoryClassName + "]", e);
-        }
-
-        return clientFactory;
     }
-
-    private MemcachedCache getCache(String regionName) {
-        return caches.get(regionName) == null ? new MemcachedCache(regionName, client, new Config(new PropertiesHelper(properties))) : caches.get(regionName);
-    }
-
-    private Config wrapInConfig(Properties properties) {
-        return new Config(new PropertiesHelper(properties));
-    }
-
 }
