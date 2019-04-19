@@ -19,7 +19,7 @@ To install it, you just need to add the following Maven dependency (check Versio
 <dependency>
     <groupId>com.github.mihaicostin</groupId>
     <artifactId>hibernate-l2-memcached</artifactId>
-    <version>5.2.17.0</version>
+    <version>5.4.2.0</version>
 </dependency>
 ```
 
