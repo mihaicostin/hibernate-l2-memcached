@@ -3,6 +3,8 @@ A library for using Memcached as a second level distributed cache in Hibernate.
   * Uses spymemcached client
   * Supports entity and query caching.
 
+![Java CI with Maven](https://github.com/mihaicostin/hibernate-l2-memcached/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 
 ## Jump to
 - [Maven dependency](https://github.com/mihaicostin/hibernate-l2-memcached/#maven-dependency)
