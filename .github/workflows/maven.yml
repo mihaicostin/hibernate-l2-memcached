@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: install memcached
+      run: sudo apt-get install memcached  
     - name: start memcached
       run: sudo systemctl start memcached  
     - name: Set up JDK 1.8
