@@ -80,8 +80,8 @@ public class MemcachedRegionFactory extends RegionFactoryTemplate {
         return new StorageAccessImpl(getOrCreateCache(defaultedRegionName, sessionFactory));
     }
 
-    protected final String defaultRegionName(String regionName, SessionFactoryImplementor sessionFactory,
-                                             String defaultRegionName, List<String> legacyDefaultRegionNames) {
+    private String defaultRegionName(String regionName, SessionFactoryImplementor sessionFactory,
+                                     String defaultRegionName, List<String> legacyDefaultRegionNames) {
         if (defaultRegionName.equals(regionName) && !cacheExists(regionName, sessionFactory)) {
             // Maybe the user configured caches explicitly with legacy names; try them and use the first that exists
             for (String legacyDefaultRegionName : legacyDefaultRegionNames) {
@@ -95,7 +95,7 @@ public class MemcachedRegionFactory extends RegionFactoryTemplate {
         return regionName;
     }
 
-    protected MemcachedCache getOrCreateCache(String unqualifiedRegionName, SessionFactoryImplementor sessionFactory) {
+    private MemcachedCache getOrCreateCache(String unqualifiedRegionName, SessionFactoryImplementor sessionFactory) {
 
         verifyStarted();
         assert !RegionNameQualifier.INSTANCE.isQualified(unqualifiedRegionName, sessionFactory.getSessionFactoryOptions());
@@ -112,7 +112,7 @@ public class MemcachedRegionFactory extends RegionFactoryTemplate {
         return cache;
     }
 
-    protected MemcachedCache createCache(String regionName) {
+    private MemcachedCache createCache(String regionName) {
         switch (missingCacheStrategy) {
             case CREATE_WARN:
                 log.warn("Creating new cache region " + regionName);
@@ -128,7 +128,7 @@ public class MemcachedRegionFactory extends RegionFactoryTemplate {
         }
     }
 
-    protected boolean cacheExists(String unqualifiedRegionName, SessionFactoryImplementor sessionFactory) {
+    private boolean cacheExists(String unqualifiedRegionName, SessionFactoryImplementor sessionFactory) {
         final String qualifiedRegionName = RegionNameQualifier.INSTANCE.qualify(
                 unqualifiedRegionName,
                 sessionFactory.getSessionFactoryOptions()
@@ -152,7 +152,7 @@ public class MemcachedRegionFactory extends RegionFactoryTemplate {
         }
     }
 
-    protected CacheManager resolveCacheManager(SessionFactoryOptions settings, Map properties) {
+    private CacheManager resolveCacheManager(SessionFactoryOptions settings, Map properties) {
         final Object explicitCacheManager = properties.get(ConfigSettings.CACHE_MANAGER);
         if (explicitCacheManager != null) {
             return useExplicitCacheManager(settings, explicitCacheManager);
@@ -164,7 +164,7 @@ public class MemcachedRegionFactory extends RegionFactoryTemplate {
     /**
      * Locate the CacheManager during start-up.  protected to allow for subclassing
      */
-    protected static CacheManager useNormalCacheManager(SessionFactoryOptions settings, Map properties) {
+    private static CacheManager useNormalCacheManager(SessionFactoryOptions settings, Map properties) {
         return new CacheManager(settings, properties);
     }
 
