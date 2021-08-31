@@ -80,6 +80,8 @@ In order to specify a property for a specific region add the region name right a
 Use the version compatible with your hibernate version (ex: Version 5.2.1.x is developed for and compatible with hibernate 5.2.1.Final)
 
 ## Hibernate 5.4.x
+* v 5.4.2.1
+    - Shutdown spymemcached client on SessionFactory.close (https://github.com/mihaicostin/hibernate-l2-memcached/commit/dc2ad3c0028916fb8b5d6c56094a9541b98c5a49 by @andrescmasmas) 
 * v 5.4.2.0 
     - Fix for [Issue #17](https://github.com/mihaicostin/hibernate-l2-memcached/issues/17)
     - tested with hibernate versions 5.3.3.Final - 5.4.2.Final
