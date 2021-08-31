@@ -55,6 +55,9 @@ public class CacheManager {
 
     public void releaseFromUse() {
         caches.clear();
+        if (client != null) {
+            client.shutdown();
+        }
     }
 
     public void addCache(String regionName) {
