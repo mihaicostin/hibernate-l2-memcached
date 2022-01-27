@@ -41,7 +41,7 @@
     <properties>
         <hibernate-core.version>5.4.2.Final</hibernate-core.version>
         <spymemcached.version>2.12.3</spymemcached.version>
-        <slf4j-api.version>1.5.6</slf4j-api.version>
+        <slf4j-api.version>1.7.32</slf4j-api.version>
 
         <junit.version>4.13.1</junit.version>
         <hsqldb.version>2.3.2</hsqldb.version>
