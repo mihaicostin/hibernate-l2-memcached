@@ -23,7 +23,7 @@ public class CacheTimeout extends AbstractHibernateTestCase {
 
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(p);
+        session.persist(p);
         transaction.commit();
 
         session.get(Person.class, 10L);
@@ -50,7 +50,7 @@ public class CacheTimeout extends AbstractHibernateTestCase {
 
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(p);
+        session.persist(p);
         transaction.commit();
 
         session.get(Person.class, 101L);
@@ -75,7 +75,7 @@ public class CacheTimeout extends AbstractHibernateTestCase {
 
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(p);
+        session.persist(p);
         transaction.commit();
 
         session.get(Person.class, anneId);

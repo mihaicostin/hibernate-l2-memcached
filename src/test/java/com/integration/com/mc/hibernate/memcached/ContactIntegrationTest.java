@@ -1,8 +1,11 @@
 package com.integration.com.mc.hibernate.memcached;
 
 import com.integration.com.mc.hibernate.memcached.entities.Contact;
-import org.hibernate.Criteria;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernateHints;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +13,6 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.Properties;
 
-import static org.hibernate.criterion.Restrictions.eq;
 import static org.junit.Assert.*;
 
 public class ContactIntegrationTest extends AbstractHibernateTestCase {
@@ -66,20 +68,22 @@ public class ContactIntegrationTest extends AbstractHibernateTestCase {
 
     @Test
     public void testQueryCache() {
-        Criteria criteria = session.createCriteria(Contact.class)
-                .add(eq("firstName", "Jon"))
-                .add(eq("lastName", "Snow"))
-                .setCacheable(true)
-                .setCacheRegion("contact.findByFirstNameAndLastName");
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Contact> criteriaQuery = criteriaBuilder.createQuery(Contact.class);
+        Root<Contact> root = criteriaQuery.from(Contact.class);
+        criteriaQuery.where(criteriaBuilder.equal(root.get("firstName"), "Jon"));
+        criteriaQuery.where(criteriaBuilder.equal(root.get("lastName"), "Snow"));
+        Contact contact1 = session.createQuery(criteriaQuery)
+                .setHint(HibernateHints.HINT_CACHEABLE, true)
+                .setHint(HibernateHints.HINT_CACHE_REGION, "contact.findByFirstNameAndLastName")
+                .getSingleResultOrNull();
+        Contact contact2 = session.createQuery(criteriaQuery)
+                .setHint(HibernateHints.HINT_CACHEABLE, true)
+                .setHint(HibernateHints.HINT_CACHE_REGION, "contact.findByFirstNameAndLastName")
+                .getSingleResultOrNull();
 
-        assertNotNull(criteria.uniqueResult());
-
-        criteria.uniqueResult();
-        criteria.uniqueResult();
-        criteria.uniqueResult();
-        criteria.uniqueResult();
-
-        assertEquals(criteria.uniqueResult(), criteria.uniqueResult());
+        assertNotNull(contact1);
+        assertEquals(contact1, contact2);
     }
 
     @Test
@@ -87,18 +91,22 @@ public class ContactIntegrationTest extends AbstractHibernateTestCase {
 
         Thread.sleep(1000);
 
-        Criteria criteria = session.createCriteria(Contact.class)
-                .add(eq("firstName", "Jon"))
-                .add(eq("lastName", "Snow"))
-                .add(eq("birthday", birthday.getTime()))
-                .setCacheable(true)
-                .setCacheRegion("contact.findByFirstNameAndLastNameAndBirthday");
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Contact> criteriaQuery = criteriaBuilder.createQuery(Contact.class);
+        Root<Contact> root = criteriaQuery.from(Contact.class);
+        criteriaQuery.where(criteriaBuilder.equal(root.get("firstName"), "Jon"));
+        criteriaQuery.where(criteriaBuilder.equal(root.get("lastName"), "Snow"));
+        criteriaQuery.where(criteriaBuilder.equal(root.get("birthday"), birthday.getTime()));
+        Contact contact1 = session.createQuery(criteriaQuery)
+                .setHint(HibernateHints.HINT_CACHEABLE, true)
+                .setHint(HibernateHints.HINT_CACHE_REGION, "contact.findByFirstNameAndLastNameAndBirthday")
+                .getSingleResultOrNull();
+        Contact contact2 = session.createQuery(criteriaQuery)
+                .setHint(HibernateHints.HINT_CACHEABLE, true)
+                .setHint(HibernateHints.HINT_CACHE_REGION, "contact.findByFirstNameAndLastNameAndBirthday")
+                .getSingleResultOrNull();
 
-        assertNotNull(criteria.uniqueResult());
-        criteria.uniqueResult();
-        criteria.uniqueResult();
-        criteria.uniqueResult();
-
-        assertEquals(criteria.uniqueResult(), criteria.uniqueResult());
+        assertNotNull(contact1);
+        assertEquals(contact1, contact2);
     }
 }

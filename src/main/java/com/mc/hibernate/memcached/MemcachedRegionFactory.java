@@ -86,7 +86,7 @@ public class MemcachedRegionFactory extends RegionFactoryTemplate {
             // Maybe the user configured caches explicitly with legacy names; try them and use the first that exists
             for (String legacyDefaultRegionName : legacyDefaultRegionNames) {
                 if (cacheExists(legacyDefaultRegionName, sessionFactory)) {
-                    SecondLevelCacheLogger.INSTANCE.usingLegacyCacheName(defaultRegionName, legacyDefaultRegionName);
+                    SecondLevelCacheLogger.L2CACHE_LOGGER.usingLegacyCacheName(defaultRegionName, legacyDefaultRegionName);
                     return legacyDefaultRegionName;
                 }
             }
