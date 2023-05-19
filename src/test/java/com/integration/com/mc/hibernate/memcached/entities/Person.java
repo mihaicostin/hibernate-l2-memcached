@@ -20,6 +20,9 @@ public class Person {
     @Column
     private String phoneNr;
 
+    public Person() {
+    }
+
     public Person(Long id, String name) {
         this.id = id;
         this.name = name;
