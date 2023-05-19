@@ -17,12 +17,11 @@ import static org.junit.Assert.assertTrue;
 
 public class SpyMemcacheClientFactoryIT {
 
-    private Properties properties = new Properties();
     private Memcache client;
-    private SpyMemcacheClientFactory factory = new SpyMemcacheClientFactory(new PropertiesHelper(properties));
 
     @Test
     public void testDefaults() throws Exception {
+        SpyMemcacheClientFactory factory = new SpyMemcacheClientFactory(new PropertiesHelper(new Properties()));
         client = factory.createMemcacheClient();
         Assert.assertNotNull(client);
     }
@@ -30,6 +29,7 @@ public class SpyMemcacheClientFactoryIT {
     @Test
     public void testAllPropertiesSet() throws Exception {
 
+        Properties properties = new Properties();
         properties.setProperty("hibernate.memcached.servers", "localhost:11211 localhost:11212");
         properties.setProperty("hibernate.memcached.hashAlgorithm", DefaultHashAlgorithm.CRC_HASH.name());
         properties.setProperty("hibernate.memcached.operationQueueLength", "8192");
@@ -37,13 +37,18 @@ public class SpyMemcacheClientFactoryIT {
         properties.setProperty("hibernate.memcached.operationTimeout", "5000");
         properties.setProperty("hibernate.memcached.daemonMode", "true");
 
+        SpyMemcacheClientFactory factory = new SpyMemcacheClientFactory(new PropertiesHelper(properties));
         client = factory.createMemcacheClient();
+
         Assert.assertNotNull(client);
     }
 
     @Test
     public void testNoAuth() throws Exception {
-        client = factory.createMemcacheClient();
+
+        SpyMemcacheClientFactory factory = new SpyMemcacheClientFactory(new PropertiesHelper(new Properties()));
+        Memcache client = factory.createMemcacheClient();
+
         assertTrue(client instanceof SpyMemcache);
         int anInt = new Random().nextInt();
 
@@ -58,17 +63,21 @@ public class SpyMemcacheClientFactoryIT {
         String username = "user";
         String password = "pass";
 
+        Properties properties = new Properties();
         properties.setProperty("hibernate.memcached.connectionFactory", "BinaryConnectionFactory");
         properties.setProperty("hibernate.memcached.username", username);
         properties.setProperty("hibernate.memcached.password", password);
 
+        SpyMemcacheClientFactory factory = new SpyMemcacheClientFactory(new PropertiesHelper(properties));
         client = factory.createMemcacheClient();
+
         assertTrue(client instanceof SpyMemcache);
 
-        client.set("ten", 1, 10L);
+        String key = "myObject" + System.currentTimeMillis();
+        client.set(key, 1, new Random().nextInt());
 
         //auth failed
-        Assert.assertNull(client.get("ten"));
+        Assert.assertNull(client.get(key));
     }
 
     @After

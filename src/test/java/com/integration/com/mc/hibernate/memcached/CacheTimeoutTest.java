@@ -8,8 +8,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Properties;
+import java.util.Random;
 
-public class CacheTimeout extends AbstractHibernateTestCase {
+public class CacheTimeoutTest extends AbstractHibernateTestCase {
+
+    private static long randomId() {
+        Random r = new Random();
+        return r.nextInt(10000)  + 1;
+    }
 
     @Test
     public void testQueryCacheQuickExpire() throws Exception {
@@ -19,21 +25,22 @@ public class CacheTimeout extends AbstractHibernateTestCase {
 
         SessionFactory sessionFactory = getConfiguration(extraProp).buildSessionFactory();
 
-        Person p = new Person(10L, "John");
+        long id = randomId();
+        Person p = new Person(id, "John");
 
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         session.persist(p);
         transaction.commit();
 
-        session.get(Person.class, 10L);
+        session.get(Person.class, id);
 
-        boolean containsEntity = sessionFactory.getCache().containsEntity(Person.class, 10L);
+        boolean containsEntity = sessionFactory.getCache().containsEntity(Person.class, id);
         Assert.assertTrue(containsEntity);
 
         Thread.sleep(3000);
 
-        containsEntity = sessionFactory.getCache().containsEntity(Person.class, 10L);
+        containsEntity = sessionFactory.getCache().containsEntity(Person.class, id);
         Assert.assertFalse(containsEntity);
 
     }
@@ -46,21 +53,22 @@ public class CacheTimeout extends AbstractHibernateTestCase {
 
         SessionFactory sessionFactory = getConfiguration(extraProp).buildSessionFactory();
 
-        Person p = new Person(101L, "Long John");
+        long id = randomId();
+        Person p = new Person(id, "Long John");
 
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         session.persist(p);
         transaction.commit();
 
-        session.get(Person.class, 101L);
+        session.get(Person.class, id);
 
-        boolean containsEntity = sessionFactory.getCache().containsEntity(Person.class, 101L);
+        boolean containsEntity = sessionFactory.getCache().containsEntity(Person.class, id);
         Assert.assertTrue(containsEntity);
 
         Thread.sleep(3000);
 
-        containsEntity = sessionFactory.getCache().containsEntity(Person.class, 101L);
+        containsEntity = sessionFactory.getCache().containsEntity(Person.class, id);
         Assert.assertTrue(containsEntity);
 
     }
@@ -70,7 +78,7 @@ public class CacheTimeout extends AbstractHibernateTestCase {
 
         SessionFactory sessionFactory = getConfiguration(null).buildSessionFactory();
 
-        long anneId = 11L;
+        long anneId = randomId();
         Person p = new Person(anneId, "Anne");
 
         Session session = sessionFactory.openSession();
