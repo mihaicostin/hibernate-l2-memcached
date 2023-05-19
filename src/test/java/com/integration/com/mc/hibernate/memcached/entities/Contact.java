@@ -4,9 +4,11 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import org.hibernate.usertype.UserType;
+
 import java.util.Date;
 
 @Entity
@@ -21,7 +23,6 @@ public class Contact {
 
     private String lastName;
 
-    @Type(type = "date")
     private Date birthday;
 
     public Long getId() {

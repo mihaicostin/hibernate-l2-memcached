@@ -3,9 +3,9 @@ package com.integration.com.mc.hibernate.memcached.entities;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
