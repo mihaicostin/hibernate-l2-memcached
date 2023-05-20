@@ -81,7 +81,7 @@ Use the version compatible with your hibernate version (ex: Version 5.2.1.x is d
 
 ## Hibernate 6.2.x
 * v 6.2.1.0
-    - Added support for Hibernate 6.2.1.Final ([PR](https://github.com/mihaicostin/hibernate-l2-memcached/pull/26) by @wglasshusain)
+    - Added support for Hibernate 6.2.1.Final ([PR](https://github.com/mihaicostin/hibernate-l2-memcached/pull/26) by [@wglasshusain](https://github.com/wglasshusain))
 
 ## Hibernate 5.4.x
 * v 5.4.2.1
