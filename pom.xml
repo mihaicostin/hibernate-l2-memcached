@@ -39,7 +39,7 @@
     </distributionManagement>
 
     <properties>
-        <hibernate-core.version>6.2.1.Final</hibernate-core.version>
+        <hibernate-core.version>6.2.2.Final</hibernate-core.version>
         <spymemcached.version>2.12.3</spymemcached.version>
         <junit.version>4.13.1</junit.version>
         <hsqldb.version>2.7.1</hsqldb.version>
